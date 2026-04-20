@@ -1,7 +1,7 @@
 import { registerRootComponent } from 'expo';
 import { ExpoRoot } from 'expo-router';
 import { StyleSheet, View, Text, Button } from 'react-native';
-import HomeScreen from './homeScreen';
+import HomeScreen from './app/(tabs)/homeScreen';
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {
