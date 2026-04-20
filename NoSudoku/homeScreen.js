@@ -8,6 +8,7 @@ export default function HomeScreen() {
   return (
     <div>
         <View style={styles.title}>Welcome to NoSudoku!</View>
+        //TODO: Once the other screens are implemented, update the onPress handlers to navigate to the correct screens instead of showing alerts.
         <Text>Click the button below to start playing.</Text>
         <Button style = {styles.button} title="Start Game" onPress={() => alert('Start Game!')} />
         <Text>See how your score compares to others!</Text>
