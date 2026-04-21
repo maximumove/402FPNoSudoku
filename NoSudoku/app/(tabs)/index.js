@@ -9,7 +9,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   return (
-    <div>
+    <View style={styles.container}>
         <View style={styles.title}>Welcome to NoSudoku!</View>
         //TODO: Once the other screens are implemented, update the onPress handlers to navigate to the correct screens instead of showing alerts.
         <Text>Click the button below to start playing.</Text>
@@ -18,10 +18,11 @@ export default function HomeScreen() {
         <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('Stats')} />
         <Text>Adjust user or game settings.</Text>
         <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('UserProfile')} />
-    </div>
-  )
+    </View>
+  );
+}
 
-    const styles = StyleSheet.create ({
+const styles = StyleSheet.create ({
       container: {
         flex: 1,
         justifyContent: 'center',
@@ -42,4 +43,3 @@ export default function HomeScreen() {
         borderRadius: 25,
       },
   });
-}
