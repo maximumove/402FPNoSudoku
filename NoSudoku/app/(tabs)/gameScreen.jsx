@@ -1,30 +1,74 @@
-//Once the user starts a game, they will be take to this screen to play the game.
-// The screen will display the game board, a timer, and buttons for pausing the game, saving progress, or quitting to the home screen.
+/**
+ * Home for the main loaded game for the screen
+ */
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
+
 export default function GameScreen() {
+    const grid = Array.from({ length: 9 }, () => Array(9).fill(""));
+
     return (
-        <View style = {styles.container}>
-            <Text style = {styles.title}>Game Screen</Text>
-            <Text style = {styles.title}>TODO: Implement the UI for the game board, timer, and buttons for pausing, saving, and quitting.</Text>
+        <View style={styles.container}>
+            <Timer />
+            <ShareButton />
+
+            <View style={styles.board}>
+                {grid.map((row, rowIndex) => (
+                <View key={rowIndex} style={styles.row}>
+                    {row.map((cell, colIndex) => {
+                    const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
+                    const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+
+                    return (
+                        <View
+                        key={`${rowIndex}-${colIndex}`}
+                        style={[
+                            styles.cell,
+                            isRightBorder && styles.rightBorder,
+                            isBottomBorder && styles.bottomBorder,
+                        ]}
+                        >
+                        <Text>{cell}</Text>
+                        </View>
+                    );
+                    })}
+                </View>
+                ))}
+            </View>
+
+            <NumberTracker />
         </View>
-        );
+    );
 }
 
 const styles = StyleSheet.create ({
-        // Add styles as needed
-        container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#000000',
-          },
-          title: {
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 20,
-            color: '#11269e',
-          }
-    })
+    container: {
+        backgroundColor: "white",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center", 
+    },
+    board: {
+        borderWidth: 3,
+        marginTop: 3,
+    },
+    row: {
+        flexDirection: "row",
+    },
+    cell: {
+        width: 40,
+        height: 40,
+        borderWidth: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    rightBorder: {
+        borderRightWidth: 3,
+    },
+    bottomBorder: {
+        borderBottomWidth: 3,
+    },
+});
