@@ -30,6 +30,34 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="gameScreen"
+        options={{
+          title: 'Game',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gamecontroller.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="startGameScreen"
+        options={{
+          title: 'Start Game',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="play.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="statsScreen"
+        options={{
+          title: 'Stats',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="userProfileScreen"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+        }}
+      />
       </Tabs>
   );
 }

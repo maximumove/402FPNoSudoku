@@ -13,12 +13,12 @@ export default function HomeScreen() {
         <View style={styles.title}>Welcome to NoSudoku!</View>
         //TODO: Once the other screens are implemented, update the onPress handlers to navigate to the correct screens instead of showing alerts.
         <Text>Click the button below to start playing.</Text>
-        <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('StartGame')} />
+        <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('startGameScreen')} />
         <Text>See how your score compares to others!</Text>
-        <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('Stats')} />
+        <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('statsScreen')} />
         <Text>Adjust user or game settings.</Text>
-        <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('UserProfile')} />
-        <Button style = {styles.tempButton} title="Temp Game Screen" onPress={() => navigation.navigate('Game')} />
+        <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('userProfileScreen')} />
+        <Button style = {styles.tempButton} title="Temp Game Screen" onPress={() => navigation.navigate('gameScreen')} />
     </View>
   );
 }
