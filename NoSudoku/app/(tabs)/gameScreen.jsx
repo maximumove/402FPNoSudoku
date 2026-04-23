@@ -7,7 +7,7 @@ export default function GameScreen() {
             <Text>Game Screen</Text>
             <Text>TODO: Implement the UI for the game board, timer, and buttons for pausing, saving, and quitting.</Text>
         </View>
-        )
+        );
 
     const styles = StyleSheet.create ({
         // Add styles as needed

@@ -18,6 +18,7 @@ export default function HomeScreen() {
         <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('Stats')} />
         <Text>Adjust user or game settings.</Text>
         <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('UserProfile')} />
+        <Button style = {styles.tempButton} title="Temp Game Screen" onPress={() => navigation.navigate('Game')} />
     </View>
   );
 }
@@ -42,4 +43,11 @@ const styles = StyleSheet.create ({
         padding: 10,
         borderRadius: 25,
       },
+      tempButton: {
+        marginVertical: 10,
+        backgroundColor: '#007BFF',
+        color: '#fff',
+        padding: 10,
+        borderRadius: 25,
+      }
   });
