@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Button, Alert } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { useSeed } from "../../context/SeedContext";
+import { useGame } from "../../context/GameContext";
 
-const ShareButton = ({ seed }) => {
-  const { seed: globalSeed } = useSeed();
-  const activeSeed = seed ?? globalSeed;
+const ShareButton = () => {
+  const { seed } = useGame();
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(String(activeSeed));
-    Alert.alert("Copied!", `Seed "${activeSeed}" is ready to paste`);
+    await Clipboard.setStringAsync(String(seed));
+    Alert.alert("Copied!", `Seed "${seed}" is ready to paste`);
   };
 
   return (
