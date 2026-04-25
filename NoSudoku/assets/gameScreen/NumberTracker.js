@@ -1,15 +1,28 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const NumberTracker = () => {
+const NumberTracker = ({ board }) => {
   const numbers = Array.from({ length: 9 }, (_, i) => i + 1);
+  const usedCounts = Array(10).fill(0);
+
+  if (Array.isArray(board)) {
+    board.forEach((row) => {
+      if (!Array.isArray(row)) return;
+
+      row.forEach((cell) => {
+        if (Number.isInteger(cell) && cell >= 1 && cell <= 9) {
+          usedCounts[cell] += 1;
+        }
+      });
+    });
+  }
 
   return (
     <View style={styles.container}>
       {numbers.map((num) => (
         <View key={num} style={styles.cell}>
           <Text style={styles.number}>{num}</Text>
-          <Text style={styles.count}>4</Text>
+          <Text style={styles.count}>{Math.max(0, 9 - usedCounts[num])}</Text>
         </View>
       ))}
     </View>

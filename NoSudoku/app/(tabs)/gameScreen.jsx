@@ -1,14 +1,18 @@
 /**
  * Home for the main loaded game for the screen
  */
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
+import Puzzle from '../../assets/gameScreen/Puzzle';
+
+const FIXED_SEED = 1;
 
 export default function GameScreen() {
-    const grid = Array.from({ length: 9 }, () => Array(9).fill(""));
+    const [grid] = useState(() => {
+        const puzzle = new Puzzle('E', FIXED_SEED);
+        return puzzle.getPuzzleBoard();
+    });
 
     return (
         <View style={styles.container}>
@@ -31,7 +35,7 @@ export default function GameScreen() {
                             isBottomBorder && styles.bottomBorder,
                         ]}
                         >
-                        <Text>{cell}</Text>
+                        <Text style={styles.cellText}>{cell === 0 ? '' : cell}</Text>
                         </View>
                     );
                     })}
@@ -39,7 +43,7 @@ export default function GameScreen() {
                 ))}
             </View>
 
-            <NumberTracker />
+            <NumberTracker board={grid} />
         </View>
     );
 }
@@ -65,10 +69,19 @@ const styles = StyleSheet.create ({
         alignItems: "center",
         justifyContent: "center",
     },
+    cellText: {
+        fontSize: 18,
+        fontWeight: "600",
+    },
     rightBorder: {
         borderRightWidth: 3,
     },
     bottomBorder: {
         borderBottomWidth: 3,
+    },
+    seedText: {
+        marginTop: 8,
+        fontSize: 14,
+        color: "#666",
     },
 });
