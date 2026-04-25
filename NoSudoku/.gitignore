@@ -41,3 +41,6 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Allow for my java files here without commit to translate
+*.java
