@@ -10,8 +10,10 @@ const NumberTracker = ({ board }) => {
       if (!Array.isArray(row)) return;
 
       row.forEach((cell) => {
-        if (Number.isInteger(cell) && cell >= 1 && cell <= 9) {
-          usedCounts[cell] += 1;
+        const numericCell = Number.parseInt(cell, 10);
+
+        if (Number.isInteger(numericCell) && numericCell >= 1 && numericCell <= 9) {
+          usedCounts[numericCell] += 1;
         }
       });
     });

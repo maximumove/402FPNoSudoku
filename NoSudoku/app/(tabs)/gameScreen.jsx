@@ -2,17 +2,37 @@
  * Home for the main loaded game for the screen
  */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
 import Puzzle from '../../assets/gameScreen/Puzzle';
 
 const FIXED_SEED = 1;
 
 export default function GameScreen() {
-    const [grid] = useState(() => {
+    const [puzzleGrid] = useState(() => {
         const puzzle = new Puzzle('E', FIXED_SEED);
         return puzzle.getPuzzleBoard();
     });
+
+    const [grid, setGrid] = useState(() =>
+        puzzleGrid.map((row) => row.map((cell) => (cell === 0 ? '' : String(cell))))
+    );
+
+    const handleCellChange = (rowIndex, colIndex, value) => {
+        const nextValue = value.replace(/[^1-9]/g, '').slice(0, 1);
+
+        setGrid((prevGrid) =>
+            prevGrid.map((row, currentRow) =>
+                row.map((cell, currentCol) => {
+                    if (currentRow !== rowIndex || currentCol !== colIndex) {
+                        return cell;
+                    }
+
+                    return nextValue;
+                })
+            )
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -25,17 +45,32 @@ export default function GameScreen() {
                     {row.map((cell, colIndex) => {
                     const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
                     const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+                    const isGiven = puzzleGrid[rowIndex][colIndex] !== 0;
 
                     return (
                         <View
                         key={`${rowIndex}-${colIndex}`}
                         style={[
                             styles.cell,
+                            isGiven && styles.givenCell,
                             isRightBorder && styles.rightBorder,
                             isBottomBorder && styles.bottomBorder,
                         ]}
                         >
-                        <Text style={styles.cellText}>{cell === 0 ? '' : cell}</Text>
+                        {isGiven ? (
+                            <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
+                        ) : (
+                            <TextInput
+                                style={styles.cellInput}
+                                value={cell}
+                                onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
+                                keyboardType="number-pad"
+                                maxLength={1}
+                                textAlign="center"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                            />
+                        )}
                         </View>
                     );
                     })}
@@ -68,10 +103,22 @@ const styles = StyleSheet.create ({
         borderWidth: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "white",
+    },
+    givenCell: {
+        backgroundColor: "#eef2f7",
     },
     cellText: {
         fontSize: 18,
         fontWeight: "600",
+    },
+    cellInput: {
+        width: "100%",
+        height: "100%",
+        fontSize: 18,
+        fontWeight: "600",
+        padding: 0,
+        margin: 0,
     },
     rightBorder: {
         borderRightWidth: 3,
