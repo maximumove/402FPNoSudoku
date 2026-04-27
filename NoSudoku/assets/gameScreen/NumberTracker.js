@@ -22,9 +22,9 @@ const NumberTracker = ({ board, selectedNumber, onSelectNumber }) => {
   return (
     <View style={styles.container}>
       {numbers.map((num) => (
-        <Pressable
+        <Pressable 
           key={num}
-          onPress={() => onSelectNumber?.(String(num))}
+          onPress={() => onSelectNumber?.(selectedNumber === String(num) ? '' : String(num))}
           style={[
             styles.cell,
             selectedNumber === String(num) && styles.selectedCell,
