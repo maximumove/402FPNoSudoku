@@ -9,10 +9,11 @@ import Puzzle from '../../assets/gameScreen/Puzzle';
 const FIXED_SEED = 1;
 
 export default function GameScreen() {
-    const [puzzleGrid] = useState(() => {
-        const puzzle = new Puzzle('E', FIXED_SEED);
-        return puzzle.getPuzzleBoard();
-    });
+    const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
+    const [selectedNumber, setSelectedNumber] = useState('');
+
+    const puzzleGrid = puzzle.getPuzzleBoard();
+    const solutionGrid = puzzle.getSolvedBoard();
 
     const [grid, setGrid] = useState(() =>
         puzzleGrid.map((row) => row.map((cell) => (cell === 0 ? '' : String(cell))))
@@ -20,6 +21,8 @@ export default function GameScreen() {
 
     const handleCellChange = (rowIndex, colIndex, value) => {
         const nextValue = value.replace(/[^1-9]/g, '').slice(0, 1);
+
+        setSelectedNumber(nextValue);
 
         setGrid((prevGrid) =>
             prevGrid.map((row, currentRow) =>
@@ -46,6 +49,12 @@ export default function GameScreen() {
                     const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
                     const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
                     const isGiven = puzzleGrid[rowIndex][colIndex] !== 0;
+                    const isFilled = cell !== '';
+                    const isIncorrect = !isGiven
+                        && isFilled
+                        && cell !== String(solutionGrid[rowIndex][colIndex]);
+                    const isSelected = selectedNumber !== ''
+                        && String(isGiven ? puzzleGrid[rowIndex][colIndex] : cell) === selectedNumber;
 
                     return (
                         <View
@@ -53,6 +62,8 @@ export default function GameScreen() {
                         style={[
                             styles.cell,
                             isGiven && styles.givenCell,
+                            isSelected && styles.selectedCell,
+                            isIncorrect && styles.incorrectCell,
                             isRightBorder && styles.rightBorder,
                             isBottomBorder && styles.bottomBorder,
                         ]}
@@ -61,7 +72,7 @@ export default function GameScreen() {
                             <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
                         ) : (
                             <TextInput
-                                style={styles.cellInput}
+                                style={[styles.cellInput, isIncorrect && styles.incorrectText]}
                                 value={cell}
                                 onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
                                 keyboardType="number-pad"
@@ -78,7 +89,11 @@ export default function GameScreen() {
                 ))}
             </View>
 
-            <NumberTracker board={grid} />
+            <NumberTracker
+                board={grid}
+                selectedNumber={selectedNumber}
+                onSelectNumber={setSelectedNumber}
+            />
         </View>
     );
 }
@@ -108,6 +123,13 @@ const styles = StyleSheet.create ({
     givenCell: {
         backgroundColor: "#eef2f7",
     },
+    selectedCell: {
+        backgroundColor: "#fff4b8",
+    },
+    incorrectCell: {
+        backgroundColor: "#ffd6d6",
+        borderColor: "#d64545",
+    },
     cellText: {
         fontSize: 18,
         fontWeight: "600",
@@ -119,6 +141,9 @@ const styles = StyleSheet.create ({
         fontWeight: "600",
         padding: 0,
         margin: 0,
+    },
+    incorrectText: {
+        color: "#b00020",
     },
     rightBorder: {
         borderRightWidth: 3,

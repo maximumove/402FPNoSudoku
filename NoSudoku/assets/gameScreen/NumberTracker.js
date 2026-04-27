@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
-const NumberTracker = ({ board }) => {
+const NumberTracker = ({ board, selectedNumber, onSelectNumber }) => {
   const numbers = Array.from({ length: 9 }, (_, i) => i + 1);
   const usedCounts = Array(10).fill(0);
 
@@ -22,10 +22,17 @@ const NumberTracker = ({ board }) => {
   return (
     <View style={styles.container}>
       {numbers.map((num) => (
-        <View key={num} style={styles.cell}>
+        <Pressable
+          key={num}
+          onPress={() => onSelectNumber?.(String(num))}
+          style={[
+            styles.cell,
+            selectedNumber === String(num) && styles.selectedCell,
+          ]}
+        >
           <Text style={styles.number}>{num}</Text>
           <Text style={styles.count}>{Math.max(0, 9 - usedCounts[num])}</Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   );
@@ -47,6 +54,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+  },
+  selectedCell: {
+    backgroundColor: "#fff4b8",
+    borderColor: "#c4a000",
   },
   number: {
     fontSize: 20,
