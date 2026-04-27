@@ -22,7 +22,7 @@ const NumberTracker = ({ board, selectedNumber, onSelectNumber }) => {
   return (
     <View style={styles.container}>
       {numbers.map((num) => (
-        <Pressable 
+        <Pressable
           key={num}
           onPress={() => onSelectNumber?.(selectedNumber === String(num) ? '' : String(num))}
           style={[
@@ -30,8 +30,8 @@ const NumberTracker = ({ board, selectedNumber, onSelectNumber }) => {
             selectedNumber === String(num) && styles.selectedCell,
           ]}
         >
-          <Text style={styles.number}>{num}</Text>
-          <Text style={styles.count}>{Math.max(0, 9 - usedCounts[num])}</Text>
+          <Text selectable={false} style={styles.number}>{num}</Text>
+          <Text selectable={false} style={styles.count}>{Math.max(0, 9 - usedCounts[num])}</Text>
         </Pressable>
       ))}
     </View>
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    cursor: "default"
   },
   selectedCell: {
     backgroundColor: "#fff4b8",
