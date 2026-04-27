@@ -25,11 +25,16 @@ export function GameProvider({ children }) {
     });
   };
 
+  const addTime = (difficulty, time) => {
+    addScore(difficulty, { time });
+  };
+
   return <GameContext.Provider value={{
         seed,
         setSeed,
         scores,
         addScore,
+        addTime,
       }}>{children}</GameContext.Provider>;
 }
 
