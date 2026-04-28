@@ -1,16 +1,23 @@
 /**
  * Home for the main loaded game for the screen
  */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
+import { useLocalSearchParams } from 'expo-router'; 
 import Puzzle from '../../assets/gameScreen/Puzzle';
+import { useGame } from '../../context/GameContext';
 
 const FIXED_SEED = 1;
 
 export default function GameScreen() {
     const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
+    const { addTime } = useGame();
+    const { difficulty } = useLocalSearchParams();
     const [selectedNumber, setSelectedNumber] = useState('');
+    const [seconds, setSeconds] = useState(0);
+    const [isSolved, setIsSolved] = useState(false);
+    const hasRecordedSolve = useRef(false);    
 
     const puzzleGrid = puzzle.getPuzzleBoard();
     const solutionGrid = puzzle.getSolvedBoard();
@@ -18,6 +25,45 @@ export default function GameScreen() {
     const [grid, setGrid] = useState(() =>
         puzzleGrid.map((row) => row.map((cell) => (cell === 0 ? '' : String(cell))))
     );
+
+    // This is for the timer!
+    useEffect(() => {
+        if (isSolved) {
+            return undefined;
+        }
+
+        const interval = setInterval(() => {
+            setSeconds((prevSeconds) => prevSeconds + 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [isSolved]);
+
+    // This is for checking to see if it is it done
+    useEffect(() => {
+        const solved = grid.every((row, rowIndex) =>
+            row.every((cell, colIndex) => cell === String(solutionGrid[rowIndex][colIndex]))
+        );
+
+        if (!solved || isSolved) {
+            return;
+        }
+
+        setIsSolved(true);
+        setSelectedNumber('');
+
+        if (!hasRecordedSolve.current) {
+            const normalizedDifficulty = String(difficulty ?? 'easy').toLowerCase();
+            const scoreKey = normalizedDifficulty === 'medium'
+                ? 'Medium'
+                : normalizedDifficulty === 'hard'
+                    ? 'Hard'
+                    : 'Easy';
+
+            addTime(scoreKey, seconds);
+            hasRecordedSolve.current = true;
+        }
+    }, [addTime, difficulty, grid, isSolved, seconds, solutionGrid]);
 
     const handleCellChange = (rowIndex, colIndex, value) => {
         const nextValue = value.replace(/[^1-9]/g, '').slice(0, 1);
@@ -39,7 +85,7 @@ export default function GameScreen() {
 
     return (
         <View style={styles.container}>
-            <Timer />
+            <Timer seconds={seconds}/>
             <ShareButton />
 
             <View style={styles.board}>
@@ -80,6 +126,9 @@ export default function GameScreen() {
                                 textAlign="center"
                                 autoCorrect={false}
                                 autoCapitalize="none"
+                                caretHidden={!isSolved}
+                                contextMenuHidden={!isSolved}
+                                editable={!isSolved}
                             />
                         )}
                         </View>
@@ -150,10 +199,5 @@ const styles = StyleSheet.create ({
     },
     bottomBorder: {
         borderBottomWidth: 3,
-    },
-    seedText: {
-        marginTop: 8,
-        fontSize: 14,
-        color: "#666",
     },
 });
