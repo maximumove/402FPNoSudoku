@@ -10,15 +10,13 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-        <View style={styles.title}>Welcome to NoSudoku!</View>
-        //TODO: Once the other screens are implemented, update the onPress handlers to navigate to the correct screens instead of showing alerts.
+        <Text style={styles.title}>Welcome to NoSudoku!</Text>
         <Text>Click the button below to start playing.</Text>
         <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('startGameScreen')} />
         <Text>See how your score compares to others!</Text>
         <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('statsScreen')} />
         <Text>Adjust user or game settings.</Text>
         <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('userProfileScreen')} />
-        <Button style = {styles.tempButton} title="Temp Game Screen" onPress={() => navigation.navigate('gameScreen')} />
     </View>
   );
 }
@@ -28,7 +26,7 @@ const styles = StyleSheet.create ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: '#44333271',
       },
       title: {
         fontSize: 24,
@@ -43,11 +41,4 @@ const styles = StyleSheet.create ({
         padding: 10,
         borderRadius: 25,
       },
-      tempButton: {
-        marginVertical: 10,
-        backgroundColor: '#007BFF',
-        color: '#fff',
-        padding: 10,
-        borderRadius: 25,
-      }
   });
