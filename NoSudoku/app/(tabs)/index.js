@@ -9,6 +9,8 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   return (
+    // relink once login screen is implemented
+    // navigation.navigate('login'),
     <View style={styles.container}>
         <Text style={styles.title}>Welcome to NoSudoku!</Text>
         <Text>Click the button below to start playing.</Text>
