@@ -8,11 +8,11 @@ export default function StatsScreen() {
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>Stats Screen</Text>
-            <Text style = {styles.title}>Games Played: 0</Text>
-            <Text style = {styles.title}>High Scores</Text>
+            <Text style = {styles.subtitle}>Games Played: 0</Text>
+            <Text style = {styles.subtitle}>High Scores</Text>
             //Insert code to display high scores once loading from database is implemented
-            <Text style = {styles.title}>Most Recent: 00:00</Text>
-            <Text style = {styles.title}>Average Time: 00:00</Text>
+            <Text style = {styles.subtitle}>Most Recent: 00:00</Text>
+            <Text style = {styles.subtitle}>Average Time: 00:00</Text>
             <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
         </View>
         );
@@ -27,9 +27,14 @@ const styles = StyleSheet.create ({
             backgroundColor: '#222222a4',
           },
           title: {
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 20,
-            color: '#0f5ed5',
-          }
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#0f5ed5',
+      },
+      subtitle: {
+        fontSize: 18,
+        marginBottom: 10,
+        color: '#0f5ed5',
+      },
     })
