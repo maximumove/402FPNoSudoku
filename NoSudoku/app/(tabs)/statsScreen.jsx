@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import {loadScores} from '../assets/Load.js';
+import {loadScores} from 'C:/Users/skysk/Spring26/CS402/FinalProject/NoSudoku/assets/Load&Save/Loads.js';
 
 export default function StatsScreen() {
     const navigation = useNavigation();
@@ -21,7 +21,6 @@ export default function StatsScreen() {
             <Text style = {styles.title}>Stats Screen</Text>
             <Text style = {styles.subtitle}>Games Played: {userScores.length}</Text>
             <Text style = {styles.subtitle}>High Scores</Text>
-            //Insert code to display high scores once loading from database is implemented
             <Text style = {styles.subtitle}>Most Recent: {userScores.length > 0 ? userScores[userScores.length - 1].time : '00:00'}</Text>
             <Text style = {styles.subtitle}>Average Time: {averageTime !== null ? averageTime.toFixed(2) : '00:00'}</Text>
             <Button title="Back to Home" onPress={() => navigation.navigate('home')} />

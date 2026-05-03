@@ -20,17 +20,17 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create ({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#44333271',
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      color: '#11269e',
-    },
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#222222a4',
+      },
+      title: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#0f5ed5',
+      },
     button: {
       marginVertical: 10,
       backgroundColor: '#007BFF',
