@@ -2,9 +2,16 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { loadUsers } from 'C:/Users/skysk/Spring26/CS402/FinalProject/NoSudoku/assets/LoadNSave.js';
 
 export default function UserProfileScreen() {
     const navigation = useNavigation();
+    const [users, setUsers] = React.useState([]);
+
+    React.useEffect(() => {
+        loadUsers().then(loadedUsers => setUsers(loadedUsers));
+    }, []);
+    
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>User Profile Screen</Text>
