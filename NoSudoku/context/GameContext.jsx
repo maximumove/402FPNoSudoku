@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import saveScores from '../assets/LoadNSave';
 
 const GameContext = createContext();
 
@@ -58,6 +59,8 @@ export function GameProvider({ children }) {
         [difficulty]: updated,
       };
     });
+
+    saveScores(scores);
   };
 
   const addTime = (difficulty, time) => {
