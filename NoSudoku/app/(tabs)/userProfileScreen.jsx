@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import {loadScores} from '../assets/Load.js';
 
 export default function UserProfileScreen() {
     const navigation = useNavigation();

@@ -2,17 +2,28 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import {loadScores} from '../assets/Load.js';
 
 export default function StatsScreen() {
     const navigation = useNavigation();
+    const [scores, setScores] = React.useState([]);
+
+    React.useEffect(() => {
+        loadScores().then(loadedScores => setScores(loadedScores));
+    }, []);
+
+    const userScores = scores.filter(score => score.username === 'JohnDoe');
+    const bestTime = userScores.length > 0 ? Math.min(...userScores.map(score => score.time)) : null;
+    const averageTime = userScores.length > 0 ? userScores.reduce((sum, score) => sum + score.time, 0) / userScores.length : null;
+
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>Stats Screen</Text>
-            <Text style = {styles.subtitle}>Games Played: 0</Text>
+            <Text style = {styles.subtitle}>Games Played: {userScores.length}</Text>
             <Text style = {styles.subtitle}>High Scores</Text>
             //Insert code to display high scores once loading from database is implemented
-            <Text style = {styles.subtitle}>Most Recent: 00:00</Text>
-            <Text style = {styles.subtitle}>Average Time: 00:00</Text>
+            <Text style = {styles.subtitle}>Most Recent: {userScores.length > 0 ? userScores[userScores.length - 1].time : '00:00'}</Text>
+            <Text style = {styles.subtitle}>Average Time: {averageTime !== null ? averageTime.toFixed(2) : '00:00'}</Text>
             <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
         </View>
         );
