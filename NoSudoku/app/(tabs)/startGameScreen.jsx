@@ -18,7 +18,7 @@ export default function StartGameScreen() {
             <Button title="Medium" onPress={() => navigation.navigate('gameScreen', { difficulty: 'medium' })} />
             <Button title="Hard" onPress={() => navigation.navigate('gameScreen', { difficulty: 'hard' })} />
             <Text style = {styles.title}>Return to Home</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('index')} />
+            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
         </View>
         );
 }

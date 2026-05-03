@@ -8,8 +8,9 @@ export default function UserProfileScreen() {
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>User Profile Screen</Text>
-            <Text style = {styles.title}>TODO: Implement the UI for viewing and changing user profile settings.</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('index')} />
+            <Text style = {styles.title}>Username: JohnDoe</Text>
+            <Text style = {styles.title}>Date Joined: 2023-01-01</Text>
+            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
         </View>
         );
 }

@@ -13,7 +13,7 @@ export default function LoginScreen() {
                 value={username}
                 onChangeText={setUsername}
             />
-            <Button title="Login" onPress={() => navigation.navigate('HomeScreen')} />
+            <Button title="Login" onPress={() => navigation.navigate('home')} />
         </View>
     );
 }
