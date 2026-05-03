@@ -6,6 +6,33 @@ import { loadUsers, saveUsers } from 'C:/Users/skysk/Spring26/CS402/FinalProject
 export default function LoginScreen() {
     const navigation = useNavigation();
     const [username, setUsername] = React.useState('');
+    const [users, setUsers] = React.useState([]);
+
+    React.useEffect(() => {
+        loadUsers().then(loadedUsers => setUsers(loadedUsers || []));
+    }, []);
+
+    const handleLogin = async () => {
+        if (!username.trim()) {
+            alert('Please enter a username');
+            return;
+        }
+
+        let existingUser = users.find(user => user.username === username);
+        
+        if (!existingUser) {
+            // Create new user
+            existingUser = {
+                username: username,
+                dateJoined: new Date().toISOString().split('T')[0],
+            };
+            const updatedUsers = [...users, existingUser];
+            await saveUsers(updatedUsers);
+        }
+
+        navigation.navigate('home', { username: username });
+    };
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -14,10 +41,9 @@ export default function LoginScreen() {
                 value={username}
                 onChangeText={setUsername}
             />
-            <Button title="Login" onPress={() => navigation.navigate('home')} />
+            <Button title="Login" onPress={handleLogin} />
         </View>
     );
-    
 }
 
 const styles = StyleSheet.create ({

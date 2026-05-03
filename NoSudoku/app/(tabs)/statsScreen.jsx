@@ -4,15 +4,16 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {loadScores} from 'C:/Users/skysk/Spring26/CS402/FinalProject/NoSudoku/assets/LoadNSave.js';
 
-export default function StatsScreen() {
+export default function StatsScreen({route}) {
     const navigation = useNavigation();
     const [scores, setScores] = React.useState([]);
+    const username = route?.params?.username || 'Guest';
 
     React.useEffect(() => {
         loadScores().then(loadedScores => setScores(loadedScores));
     }, []);
 
-    const userScores = scores.filter(score => score.username === 'JohnDoe');
+    const userScores = scores.filter(score => score.username === username);
     const bestTime = userScores.length > 0 ? Math.min(...userScores.map(score => score.time)) : null;
     const averageTime = userScores.length > 0 ? userScores.reduce((sum, score) => sum + score.time, 0) / userScores.length : null;
 

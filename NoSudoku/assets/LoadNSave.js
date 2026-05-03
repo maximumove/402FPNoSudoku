@@ -9,8 +9,7 @@ const saveUsersLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/s
 export async function loadUsers(){
     const response = await fetch(loadUsersLink);
     const data = await response.json();
-    // This is slightly wrong i think
-    setUsers(data);
+    return data;
 }
 
 export async function loadScores(){
@@ -32,12 +31,12 @@ export async function loadScores(){
         }
     });
 
-    setScores(grouped);
+    return grouped;
 }
 
 // ================================= //
 
-export async function saveUsers(){
+export async function saveUsers(users){
   const requestOptions = {
       method: 'POST',
       headers: {
