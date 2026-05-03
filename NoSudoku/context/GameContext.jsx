@@ -1,11 +1,46 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
   const [seed, setSeed] = useState('1');
 
-  // readable Scores
+  // Users
+  const [currentUser, setCurrentUser] = useState("Admin");
+  const [users, setUsers] = useState(
+      {
+      user: "FakeUser",
+      fastestTime: null,
+      board: null,
+      seed: null,
+      friendList: [],
+    },
+  );
+
+  const addUser = (name, board = null, seed = null, friendList=null,) => {
+    setUsers((prev) => [
+      ...prev,
+      {
+        name: name,
+        fastestTime: null,
+        board: board,
+        seed: seed,
+        friendList: friendList,
+      },
+    ]);
+  }
+
+  const updateUser = (name, boad = null, seed = null, friendlist = null) =>{
+
+    if(!board == null || !seed == null){
+      // the users board and seed here.
+    }
+    if(!friendlist == null){
+      // ADD FRIENDS HERE TODO:
+    }
+  }
+ 
+  // Scores
   const [scores, setScores] = useState({
     Easy: [],
     Medium: [],
@@ -26,14 +61,24 @@ export function GameProvider({ children }) {
   };
 
   const addTime = (difficulty, time) => {
-    addScore(difficulty, { time });
+    addScore(difficulty, { user: currentUser, time: time });
   };
 
   return <GameContext.Provider value={{
+        // Board stuff    
         seed,
         setSeed,
+
+        // Users stuff
+        currentUser,
+        setCurrentUser,
+        users,
+        setUsers,
+        addUser,
+        updateUser,
+
+        // Scores Stuff
         scores,
-        addScore,
         addTime,
       }}>{children}</GameContext.Provider>;
 }
