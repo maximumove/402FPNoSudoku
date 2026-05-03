@@ -13,11 +13,11 @@ export default function HomeScreen() {
     // navigation.navigate('login'),
     <View style={styles.container}>
         <Text style={styles.title}>Welcome to NoSudoku!</Text>
-        <Text>Click the button below to start playing.</Text>
+        <Text style={styles.subtitle}>Click the button below to start playing.</Text>
         <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('startGameScreen')} />
-        <Text>See how your score compares to others!</Text>
+        <Text style={styles.subtitle}>See how your score compares to others!</Text>
         <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('statsScreen')} />
-        <Text>Adjust user or game settings.</Text>
+        <Text style={styles.subtitle}>Adjust user or game settings.</Text>
         <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('userProfileScreen')} />
     </View>
   );
@@ -28,13 +28,18 @@ const styles = StyleSheet.create ({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#44333271',
+        backgroundColor: '#222222a4',
       },
       title: {
-        fontSize: 24,
+        fontSize: 40,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#11269e',
+        color: '#0f5ed5',
+      },
+      subtitle: {
+        fontSize: 18,
+        marginBottom: 10,
+        color: '#0f5ed5',
       },
       button: {
         marginVertical: 10,
