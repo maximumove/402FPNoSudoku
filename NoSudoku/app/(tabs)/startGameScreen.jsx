@@ -18,7 +18,7 @@ export default function StartGameScreen() {
             <Button title="Medium" onPress={() => navigation.navigate('gameScreen', { difficulty: 'medium' })} />
             <Button title="Hard" onPress={() => navigation.navigate('gameScreen', { difficulty: 'hard' })} />
             <Text style = {styles.title}>Return to Home</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('index')} />
+            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
         </View>
         );
 }
@@ -29,12 +29,12 @@ const styles = StyleSheet.create ({
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#000000',
+            backgroundColor: '#222222a4',
           },
           title: {
             fontSize: 24,
             fontWeight: 'bold',
             marginBottom: 20,
-            color: '#11269e',
+            color: '#0f5ed5',
           }
     })

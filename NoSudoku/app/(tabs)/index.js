@@ -1,53 +1,49 @@
-// Add imports as needed
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// This is the home screen component for NoSudoku
-// This should be the first screen users see when they open the app.
-export default function HomeScreen() {
-  const navigation = useNavigation();
-
-  return (
-    <View style={styles.container}>
-        <View style={styles.title}>Welcome to NoSudoku!</View>
-        //TODO: Once the other screens are implemented, update the onPress handlers to navigate to the correct screens instead of showing alerts.
-        <Text>Click the button below to start playing.</Text>
-        <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('startGameScreen')} />
-        <Text>See how your score compares to others!</Text>
-        <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('statsScreen')} />
-        <Text>Adjust user or game settings.</Text>
-        <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('userProfileScreen')} />
-        <Button style = {styles.tempButton} title="Temp Game Screen" onPress={() => navigation.navigate('gameScreen')} />
-    </View>
-  );
+export default function LoginScreen() {
+    const navigation = useNavigation();
+    const [username, setUsername] = React.useState('');
+    return (
+        <View style={styles.container}>
+            <TextInput
+                style={styles.input}
+                placeholder="Enter your username"
+                value={username}
+                onChangeText={setUsername}
+            />
+            <Button title="Login" onPress={() => navigation.navigate('home')} />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create ({
-      container: {
+    container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: '#222222a4',
       },
       title: {
-        fontSize: 24,
+        fontSize: 40,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#11269e',
+        color: '#0f5ed5',
       },
-      button: {
-        marginVertical: 10,
-        backgroundColor: '#007BFF',
-        color: '#fff',
-        padding: 10,
-        borderRadius: 25,
-      },
-      tempButton: {
-        marginVertical: 10,
-        backgroundColor: '#007BFF',
-        color: '#fff',
-        padding: 10,
-        borderRadius: 25,
-      }
-  });
+    button: {
+      marginVertical: 10,
+      backgroundColor: '#007BFF',
+      color: '#fff',
+      padding: 10,
+      borderRadius: 25,
+    },
+    input: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        width: '80%',
+    },
+});
