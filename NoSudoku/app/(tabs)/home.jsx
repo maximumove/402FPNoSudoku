@@ -15,11 +15,11 @@ export default function HomeScreen() {
         <Text style={styles.title}>Welcome to NoSudoku!</Text>
         <Text style={styles.subtitle}>Logged in as: {displayUsername}</Text>
         <Text style={styles.subtitle}>Click the button below to start playing.</Text>
-        <Button style = {styles.button} title="Start Game" onPress={() => router.push('/startGameScreen?username=' + displayUsername)} />
+        <Button style = {styles.button} title="Start Game" onPress={() => router.push('/(tabs)/startGameScreen?username=' + encodeURIComponent(displayUsername))} />
         <Text style={styles.subtitle}>See how your score compares to others!</Text>
-        <Button style = {styles.button} title="View Leaderboard" onPress={() => router.push('/statsScreen?username=' + displayUsername)} />
+        <Button style = {styles.button} title="View Leaderboard" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(displayUsername))} />
         <Text style={styles.subtitle}>Adjust user or game settings.</Text>
-        <Button style = {styles.button} title="Settings" onPress={() => router.push('/userProfileScreen?username=' + displayUsername)} />
+        <Button style = {styles.button} title="Settings" onPress={() => router.push('/(tabs)/userProfileScreen?username=' + encodeURIComponent(displayUsername))} />
     </View>
   );
 }

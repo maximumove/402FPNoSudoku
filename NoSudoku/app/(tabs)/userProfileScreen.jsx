@@ -18,7 +18,7 @@ export default function UserProfileScreen() {
             <Text style = {styles.title}>User Profile Screen</Text>
             <Text style = {styles.subtitle}>Username: JohnDoe</Text>
             <Text style = {styles.subtitle}>Date Joined: 2023-01-01</Text>
-            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
+            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
         </View>
         );
 }

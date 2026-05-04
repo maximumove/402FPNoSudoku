@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { loadUsers, saveUsers } from '../../assets/LoadNSave.js';
+import { loadUsers, saveUsers } from '../assets/LoadNSave.js';
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -9,7 +9,10 @@ export default function LoginScreen() {
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
-        loadUsers().then(loadedUsers => setUsers(loadedUsers || []));
+        loadUsers().then(loadedUsers => setUsers(loadedUsers || [])).catch(error => {
+            console.error('Failed to load users:', error);
+            setUsers([]);
+        });
     }, []);
 
     const handleLogin = async () => {
@@ -27,10 +30,15 @@ export default function LoginScreen() {
                 dateJoined: new Date().toISOString().split('T')[0],
             };
             const updatedUsers = [...users, existingUser];
-            await saveUsers(updatedUsers);
+            try {
+                await saveUsers(updatedUsers);
+            } catch (error) {
+                console.error('Failed to save user:', error);
+                // Still proceed to login
+            }
         }
 
-        router.push('/home?username=' + username);
+        router.replace('/(tabs)/home?username=' + encodeURIComponent(username));
     };
 
     return (

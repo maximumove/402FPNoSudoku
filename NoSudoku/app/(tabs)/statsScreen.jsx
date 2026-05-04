@@ -13,7 +13,8 @@ export default function StatsScreen() {
         loadScores().then(loadedScores => setScores(loadedScores));
     }, []);
 
-    const userScores = scores.filter(score => score.username === username);
+    const allScores = Object.values(scores).flat();
+    const userScores = allScores.filter(score => score.username === username);
     const bestTime = userScores.length > 0 ? Math.min(...userScores.map(score => score.time)) : null;
     const averageTime = userScores.length > 0 ? userScores.reduce((sum, score) => sum + score.time, 0) / userScores.length : null;
 
@@ -24,7 +25,7 @@ export default function StatsScreen() {
             <Text style = {styles.subtitle}>High Scores</Text>
             <Text style = {styles.subtitle}>Most Recent: {userScores.length > 0 ? userScores[userScores.length - 1].time : '00:00'}</Text>
             <Text style = {styles.subtitle}>Average Time: {averageTime !== null ? averageTime.toFixed(2) : '00:00'}</Text>
-            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
+            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
         </View>
         );
 }

@@ -12,14 +12,14 @@ export default function StartGameScreen() {
         <View style = {styles.container}>
             <Text style = {styles.title}>Start Game Screen</Text>
             <Text style = {styles.title}>TODO: Implement the UI for starting a new game, continuing a saved game, and selecting difficulty levels.</Text>
-            <Button title="Start New Game" onPress={() => router.push('/gameScreen?username=' + username)} />
-            <Button title="Continue Saved Game" onPress={() => router.push('/gameScreen?username=' + username)} />
+            <Button title="Start New Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
+            <Button title="Continue Saved Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
             <Text style = {styles.title}>Select Difficulty</Text>
-            <Button title="Easy" onPress={() => router.push('/gameScreen?difficulty=easy&username=' + username)} />
-            <Button title="Medium" onPress={() => router.push('/gameScreen?difficulty=medium&username=' + username)} />
-            <Button title="Hard" onPress={() => router.push('/gameScreen?difficulty=hard&username=' + username)} />
+            <Button title="Easy" onPress={() => router.push('/(tabs)/gameScreen?difficulty=easy&username=' + encodeURIComponent(username))} />
+            <Button title="Medium" onPress={() => router.push('/(tabs)/gameScreen?difficulty=medium&username=' + encodeURIComponent(username))} />
+            <Button title="Hard" onPress={() => router.push('/(tabs)/gameScreen?difficulty=hard&username=' + encodeURIComponent(username))} />
             <Text style = {styles.title}>Return to Home</Text>
-            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
+            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
         </View>
         );
 }

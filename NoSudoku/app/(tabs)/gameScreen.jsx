@@ -91,8 +91,8 @@ export default function GameScreen() {
                 <View style={styles.completionContainer}>
                     <Text style={styles.completionTitle}>Congratulations!</Text>
                     <Text style={styles.completionText}>You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!</Text>
-                    <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
-                    <Button title="View Stats" onPress={() => router.push('/statsScreen?username=' + username)} />
+                    <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+                    <Button title="View Stats" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
                 </View>
             ) : (
                 <>

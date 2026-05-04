@@ -1,7 +1,8 @@
 import { registerRootComponent } from 'expo';
 import { ExpoRoot } from 'expo-router';
 import { StyleSheet, View, Text, Button } from 'react-native';
-import HomeScreen from './app/(tabs)/index.js'; // Import the HomeScreen component
+import LoginScreen from './app/index.js'; // Import the LoginScreen component
+import HomeScreen from './app/(tabs)/home.jsx'; // Import the HomeScreen component
 import StartGameScreen from './app/(tabs)/startGameScreen.jsx'; // Import the StartGameScreen component
 import StatsScreen from './app/(tabs)/statsScreen.jsx'; // Import the StatsScreen component
 import UserProfileScreen from './app/(tabs)/userProfileScreen.jsx'; // Import the UserProfileScreen component
