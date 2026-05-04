@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { loadUsers, saveUsers } from '../../assets/LoadNSave.js';
 
 export default function LoginScreen() {
-    const navigation = useNavigation();
+    const router = useRouter();
     const [username, setUsername] = React.useState('');
     const [users, setUsers] = React.useState([]);
 
@@ -30,7 +30,7 @@ export default function LoginScreen() {
             await saveUsers(updatedUsers);
         }
 
-        navigation.navigate('home', { username: username });
+        router.push('/home?username=' + username);
     };
 
     return (

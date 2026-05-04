@@ -1,12 +1,12 @@
 // This screen will be where the user can change/view their profile settings.
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { loadUsers } from '../../assets/LoadNSave.js';
 
-export default function UserProfileScreen({route}) {
-    const navigation = useNavigation();
-    const username = route?.params?.username || 'Guest';
+export default function UserProfileScreen() {
+    const router = useRouter();
+    const { username } = useLocalSearchParams();
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
@@ -18,7 +18,7 @@ export default function UserProfileScreen({route}) {
             <Text style = {styles.title}>User Profile Screen</Text>
             <Text style = {styles.subtitle}>Username: JohnDoe</Text>
             <Text style = {styles.subtitle}>Date Joined: 2023-01-01</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
+            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
         </View>
         );
 }

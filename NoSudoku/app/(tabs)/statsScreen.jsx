@@ -1,13 +1,13 @@
 // This screen will show the user's game statistics, such as their best times, average times, and number of games played.
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import {loadScores} from '../../assets/LoadNSave.js';
 
-export default function StatsScreen({route}) {
-    const navigation = useNavigation();
+export default function StatsScreen() {
+    const router = useRouter();
+    const { username } = useLocalSearchParams();
     const [scores, setScores] = React.useState([]);
-    const username = route?.params?.username || 'Guest';
 
     React.useEffect(() => {
         loadScores().then(loadedScores => setScores(loadedScores));
@@ -24,7 +24,7 @@ export default function StatsScreen({route}) {
             <Text style = {styles.subtitle}>High Scores</Text>
             <Text style = {styles.subtitle}>Most Recent: {userScores.length > 0 ? userScores[userScores.length - 1].time : '00:00'}</Text>
             <Text style = {styles.subtitle}>Average Time: {averageTime !== null ? averageTime.toFixed(2) : '00:00'}</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
+            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
         </View>
         );
 }

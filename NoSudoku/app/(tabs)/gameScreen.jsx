@@ -7,7 +7,7 @@ import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
 import { useLocalSearchParams } from 'expo-router'; 
 import Puzzle from '../../assets/gameScreen/Puzzle';
 import { useGame } from '../../context/GameContext';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const FIXED_SEED = 1;
 
@@ -15,7 +15,7 @@ export default function GameScreen() {
     const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
     const { addTime } = useGame();
     const { difficulty, username } = useLocalSearchParams();
-    const navigation = useNavigation();
+    const router = useRouter();
     const [selectedNumber, setSelectedNumber] = useState('');
     const [seconds, setSeconds] = useState(0);
     const [isSolved, setIsSolved] = useState(false);
@@ -91,8 +91,8 @@ export default function GameScreen() {
                 <View style={styles.completionContainer}>
                     <Text style={styles.completionTitle}>Congratulations!</Text>
                     <Text style={styles.completionText}>You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!</Text>
-                    <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
-                    <Button title="View Stats" onPress={() => navigation.navigate('statsScreen', { username })} />
+                    <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
+                    <Button title="View Stats" onPress={() => router.push('/statsScreen?username=' + username)} />
                 </View>
             ) : (
                 <>

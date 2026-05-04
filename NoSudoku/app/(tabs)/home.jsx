@@ -1,24 +1,25 @@
 // Add imports as needed
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 // This is the home screen component for NoSudoku
 // This should be the first screen users see when they open the app.
-export default function HomeScreen({route}) {
-  const navigation = useNavigation();
-  const username = route?.params?.username || 'Guest';
+export default function HomeScreen() {
+  const router = useRouter();
+  const { username } = useLocalSearchParams();
+  const displayUsername = username || 'Guest';
 
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Welcome to NoSudoku!</Text>
-        <Text style={styles.subtitle}>Logged in as: {username}</Text>
+        <Text style={styles.subtitle}>Logged in as: {displayUsername}</Text>
         <Text style={styles.subtitle}>Click the button below to start playing.</Text>
-        <Button style = {styles.button} title="Start Game" onPress={() => navigation.navigate('startGameScreen', {username})} />
+        <Button style = {styles.button} title="Start Game" onPress={() => router.push('/startGameScreen?username=' + displayUsername)} />
         <Text style={styles.subtitle}>See how your score compares to others!</Text>
-        <Button style = {styles.button} title="View Leaderboard" onPress={() => navigation.navigate('statsScreen', {username})} />
+        <Button style = {styles.button} title="View Leaderboard" onPress={() => router.push('/statsScreen?username=' + displayUsername)} />
         <Text style={styles.subtitle}>Adjust user or game settings.</Text>
-        <Button style = {styles.button} title="Settings" onPress={() => navigation.navigate('userProfileScreen', {username})} />
+        <Button style = {styles.button} title="Settings" onPress={() => router.push('/userProfileScreen?username=' + displayUsername)} />
     </View>
   );
 }

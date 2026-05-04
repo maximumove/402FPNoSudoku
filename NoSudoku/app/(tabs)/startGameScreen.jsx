@@ -2,24 +2,24 @@
 // Add imports as needed
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
-export default function StartGameScreen({route}) {
-    const navigation = useNavigation();
-    const username = route?.params?.username || 'Guest';
+export default function StartGameScreen() {
+    const router = useRouter();
+    const { username } = useLocalSearchParams();
 
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>Start Game Screen</Text>
             <Text style = {styles.title}>TODO: Implement the UI for starting a new game, continuing a saved game, and selecting difficulty levels.</Text>
-            <Button title="Start New Game" onPress={() => navigation.navigate('gameScreen', { username })} />
-            <Button title="Continue Saved Game" onPress={() => navigation.navigate('gameScreen', { username })} />
+            <Button title="Start New Game" onPress={() => router.push('/gameScreen?username=' + username)} />
+            <Button title="Continue Saved Game" onPress={() => router.push('/gameScreen?username=' + username)} />
             <Text style = {styles.title}>Select Difficulty</Text>
-            <Button title="Easy" onPress={() => navigation.navigate('gameScreen', { difficulty: 'easy', username })} />
-            <Button title="Medium" onPress={() => navigation.navigate('gameScreen', { difficulty: 'medium', username })} />
-            <Button title="Hard" onPress={() => navigation.navigate('gameScreen', { difficulty: 'hard', username })} />
+            <Button title="Easy" onPress={() => router.push('/gameScreen?difficulty=easy&username=' + username)} />
+            <Button title="Medium" onPress={() => router.push('/gameScreen?difficulty=medium&username=' + username)} />
+            <Button title="Hard" onPress={() => router.push('/gameScreen?difficulty=hard&username=' + username)} />
             <Text style = {styles.title}>Return to Home</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
+            <Button title="Back to Home" onPress={() => router.push('/home?username=' + username)} />
         </View>
         );
 }
