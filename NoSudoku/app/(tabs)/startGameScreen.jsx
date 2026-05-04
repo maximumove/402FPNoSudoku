@@ -4,21 +4,22 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export default function StartGameScreen() {
+export default function StartGameScreen({route}) {
     const navigation = useNavigation();
+    const username = route?.params?.username || 'Guest';
 
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>Start Game Screen</Text>
             <Text style = {styles.title}>TODO: Implement the UI for starting a new game, continuing a saved game, and selecting difficulty levels.</Text>
-            <Button title="Start New Game" onPress={() => navigation.navigate('gameScreen')} />
-            <Button title="Continue Saved Game" onPress={() => navigation.navigate('gameScreen')} />
+            <Button title="Start New Game" onPress={() => navigation.navigate('gameScreen', { username })} />
+            <Button title="Continue Saved Game" onPress={() => navigation.navigate('gameScreen', { username })} />
             <Text style = {styles.title}>Select Difficulty</Text>
-            <Button title="Easy" onPress={() => navigation.navigate('gameScreen', { difficulty: 'easy' })} />
-            <Button title="Medium" onPress={() => navigation.navigate('gameScreen', { difficulty: 'medium' })} />
-            <Button title="Hard" onPress={() => navigation.navigate('gameScreen', { difficulty: 'hard' })} />
+            <Button title="Easy" onPress={() => navigation.navigate('gameScreen', { difficulty: 'easy', username })} />
+            <Button title="Medium" onPress={() => navigation.navigate('gameScreen', { difficulty: 'medium', username })} />
+            <Button title="Hard" onPress={() => navigation.navigate('gameScreen', { difficulty: 'hard', username })} />
             <Text style = {styles.title}>Return to Home</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
+            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
         </View>
         );
 }

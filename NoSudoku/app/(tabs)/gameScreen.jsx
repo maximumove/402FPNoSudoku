@@ -2,18 +2,20 @@
  * Home for the main loaded game for the screen
  */
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
 import { useLocalSearchParams } from 'expo-router'; 
 import Puzzle from '../../assets/gameScreen/Puzzle';
 import { useGame } from '../../context/GameContext';
+import { useNavigation } from '@react-navigation/native';
 
 const FIXED_SEED = 1;
 
 export default function GameScreen() {
     const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
     const { addTime } = useGame();
-    const { difficulty } = useLocalSearchParams();
+    const { difficulty, username } = useLocalSearchParams();
+    const navigation = useNavigation();
     const [selectedNumber, setSelectedNumber] = useState('');
     const [seconds, setSeconds] = useState(0);
     const [isSolved, setIsSolved] = useState(false);
@@ -85,64 +87,75 @@ export default function GameScreen() {
 
     return (
         <View style={styles.container}>
-            <Timer seconds={seconds}/>
-            <ShareButton />
-
-            <View style={styles.board}>
-                {grid.map((row, rowIndex) => (
-                <View key={rowIndex} style={styles.row}>
-                    {row.map((cell, colIndex) => {
-                    const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
-                    const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
-                    const isGiven = puzzleGrid[rowIndex][colIndex] !== 0;
-                    const isFilled = cell !== '';
-                    const isIncorrect = !isGiven
-                        && isFilled
-                        && cell !== String(solutionGrid[rowIndex][colIndex]);
-                    const isSelected = selectedNumber !== ''
-                        && String(isGiven ? puzzleGrid[rowIndex][colIndex] : cell) === selectedNumber;
-
-                    return (
-                        <View
-                        key={`${rowIndex}-${colIndex}`}
-                        style={[
-                            styles.cell,
-                            isGiven && styles.givenCell,
-                            isSelected && styles.selectedCell,
-                            isIncorrect && styles.incorrectCell,
-                            isRightBorder && styles.rightBorder,
-                            isBottomBorder && styles.bottomBorder,
-                        ]}
-                        >
-                        {isGiven ? (
-                            <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
-                        ) : (
-                            <TextInput
-                                style={[styles.cellInput, isIncorrect && styles.incorrectText]}
-                                value={cell}
-                                onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
-                                keyboardType="number-pad"
-                                maxLength={1}
-                                textAlign="center"
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                caretHidden={!isSolved}
-                                contextMenuHidden={!isSolved}
-                                editable={!isSolved}
-                            />
-                        )}
-                        </View>
-                    );
-                    })}
+            {isSolved ? (
+                <View style={styles.completionContainer}>
+                    <Text style={styles.completionTitle}>Congratulations!</Text>
+                    <Text style={styles.completionText}>You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!</Text>
+                    <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
+                    <Button title="View Stats" onPress={() => navigation.navigate('statsScreen', { username })} />
                 </View>
-                ))}
-            </View>
+            ) : (
+                <>
+                    <Timer seconds={seconds}/>
+                    <ShareButton />
 
-            <NumberTracker
-                board={grid}
-                selectedNumber={selectedNumber}
-                onSelectNumber={setSelectedNumber}
-            />
+                    <View style={styles.board}>
+                        {grid.map((row, rowIndex) => (
+                        <View key={rowIndex} style={styles.row}>
+                            {row.map((cell, colIndex) => {
+                            const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
+                            const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+                            const isGiven = puzzleGrid[rowIndex][colIndex] !== 0;
+                            const isFilled = cell !== '';
+                            const isIncorrect = !isGiven
+                                && isFilled
+                                && cell !== String(solutionGrid[rowIndex][colIndex]);
+                            const isSelected = selectedNumber !== ''
+                                && String(isGiven ? puzzleGrid[rowIndex][colIndex] : cell) === selectedNumber;
+
+                            return (
+                                <View
+                                key={`${rowIndex}-${colIndex}`}
+                                style={[
+                                    styles.cell,
+                                    isGiven && styles.givenCell,
+                                    isSelected && styles.selectedCell,
+                                    isIncorrect && styles.incorrectCell,
+                                    isRightBorder && styles.rightBorder,
+                                    isBottomBorder && styles.bottomBorder,
+                                ]}
+                                >
+                                {isGiven ? (
+                                    <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
+                                ) : (
+                                    <TextInput
+                                        style={[styles.cellInput, isIncorrect && styles.incorrectText]}
+                                        value={cell}
+                                        onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
+                                        keyboardType="number-pad"
+                                        maxLength={1}
+                                        textAlign="center"
+                                        autoCorrect={false}
+                                        autoCapitalize="none"
+                                        caretHidden={!isSolved}
+                                        contextMenuHidden={!isSolved}
+                                        editable={!isSolved}
+                                    />
+                                )}
+                                </View>
+                            );
+                            })}
+                        </View>
+                        ))}
+                    </View>
+
+                    <NumberTracker
+                        board={grid}
+                        selectedNumber={selectedNumber}
+                        onSelectNumber={setSelectedNumber}
+                    />
+                </>
+            )}
         </View>
     );
 }
@@ -153,6 +166,22 @@ const styles = StyleSheet.create ({
         flex: 1,
         alignItems: "center",
         justifyContent: "center", 
+    },
+    completionContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+        flex: 1,
+    },
+    completionTitle: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#0f5ed5',
+    },
+    completionText: {
+        fontSize: 18,
+        marginBottom: 20,
+        color: '#0f5ed5',
     },
     board: {
         borderWidth: 3,

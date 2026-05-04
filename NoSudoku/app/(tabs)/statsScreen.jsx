@@ -24,7 +24,7 @@ export default function StatsScreen({route}) {
             <Text style = {styles.subtitle}>High Scores</Text>
             <Text style = {styles.subtitle}>Most Recent: {userScores.length > 0 ? userScores[userScores.length - 1].time : '00:00'}</Text>
             <Text style = {styles.subtitle}>Average Time: {averageTime !== null ? averageTime.toFixed(2) : '00:00'}</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
+            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
         </View>
         );
 }

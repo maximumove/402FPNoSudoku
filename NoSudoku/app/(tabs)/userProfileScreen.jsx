@@ -4,8 +4,9 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { loadUsers } from 'C:/Users/skysk/Spring26/CS402/FinalProject/NoSudoku/assets/LoadNSave.js';
 
-export default function UserProfileScreen() {
+export default function UserProfileScreen({route}) {
     const navigation = useNavigation();
+    const username = route?.params?.username || 'Guest';
     const [users, setUsers] = React.useState([]);
 
     React.useEffect(() => {
@@ -17,7 +18,7 @@ export default function UserProfileScreen() {
             <Text style = {styles.title}>User Profile Screen</Text>
             <Text style = {styles.subtitle}>Username: JohnDoe</Text>
             <Text style = {styles.subtitle}>Date Joined: 2023-01-01</Text>
-            <Button title="Back to Home" onPress={() => navigation.navigate('home')} />
+            <Button title="Back to Home" onPress={() => navigation.navigate('home', { username })} />
         </View>
         );
 }
