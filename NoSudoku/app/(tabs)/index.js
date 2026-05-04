@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { loadUsers, saveUsers } from 'C:/Users/skysk/Spring26/CS402/FinalProject/NoSudoku/assets/LoadNSave.js';
+import { loadUsers, saveUsers } from '../../assets/LoadNSave.js';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
