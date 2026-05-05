@@ -2,7 +2,7 @@
  * Home for the main loaded game for the screen
  */
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, useWindowDimensions, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, useWindowDimensions, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
 import { useLocalSearchParams } from 'expo-router';
 import Puzzle from '../../assets/gameScreen/Puzzle';
