@@ -2,7 +2,7 @@
  * Home for the main loaded game for the screen
  */
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, useWindowDimensions, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
 import { useLocalSearchParams } from 'expo-router';
 import Puzzle from '../../assets/gameScreen/Puzzle';
@@ -86,7 +86,7 @@ export default function GameScreen() {
             const normalizedDifficulty = difficulty.toLowerCase();
             const scoreKey = normalizedDifficulty === 'medium' ? 'Medium'
                 : normalizedDifficulty === 'hard' ? 'Hard' : 'Easy';
-            addTime(scoreKey, seconds);
+            addTime(scoreKey, seconds, username);
             hasRecordedSolve.current = true;
         }
     }, [addTime, difficulty, grid, isSolved, isReady, seconds, solutionGrid, username]);

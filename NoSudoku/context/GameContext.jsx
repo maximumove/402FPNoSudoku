@@ -65,8 +65,8 @@ export function GameProvider({ children }) {
     });
   };
 
-  const addTime = (difficulty, time) => {
-    addScore(difficulty, { user: currentUser, time: time });
+  const addTime = (difficulty, time, username = currentUser) => {
+    addScore(difficulty, { user: username, time: time });
   };
 
   return <GameContext.Provider value={{
