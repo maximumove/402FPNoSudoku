@@ -11,7 +11,6 @@ export default function StartGameScreen() {
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>Start Game Screen</Text>
-            <Text style = {styles.title}>TODO: Implement the UI for starting a new game, continuing a saved game, and selecting difficulty levels.</Text>
             <Button title="Start New Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
             <Button title="Continue Saved Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
             <Text style = {styles.title}>Select Difficulty</Text>
