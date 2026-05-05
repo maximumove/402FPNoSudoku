@@ -9,36 +9,96 @@ const loadUsersLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/l
 const saveScoresLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/savejson.php?user=Team3Scores';
 const saveUsersLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/savejson.php?user=Team3Users';
  
-// ── Local picture storage (stays on device, avoids server size limits) ──────
+// ── Local storage helpers ────────────────────────────────────────────────────
  
-export async function saveProfilePicture(username, dataUri) {
-    const key = `profilePic_${username}`;
+async function localSet(key, value) {
+    const str = JSON.stringify(value);
+    if (Platform.OS === 'web') {
+        localStorage.setItem(key, str);
+    } else {
+        await AsyncStorage.setItem(key, str);
+    }
+}
+ 
+async function localGet(key) {
     try {
         if (Platform.OS === 'web') {
-            localStorage.setItem(key, dataUri);
+            const val = localStorage.getItem(key);
+            return val ? JSON.parse(val) : null;
         } else {
-            await AsyncStorage.setItem(key, dataUri);
+            const val = await AsyncStorage.getItem(key);
+            return val ? JSON.parse(val) : null;
         }
+    } catch (e) {
+        console.error('localGet error:', e);
+        return null;
+    }
+}
+ 
+async function localDelete(key) {
+    if (Platform.OS === 'web') {
+        localStorage.removeItem(key);
+    } else {
+        await AsyncStorage.removeItem(key);
+    }
+}
+ 
+// ── Profile picture (stored locally, never on server) ───────────────────────
+ 
+export async function saveProfilePicture(username, dataUri) {
+    try {
+        await localSet(`profilePic_${username}`, dataUri);
     } catch (e) {
         console.error('Failed to save profile picture locally:', e);
     }
 }
  
 export async function loadProfilePicture(username) {
-    const key = `profilePic_${username}`;
     try {
-        if (Platform.OS === 'web') {
-            return localStorage.getItem(key) || null;
-        } else {
-            return await AsyncStorage.getItem(key);
-        }
+        return await localGet(`profilePic_${username}`);
     } catch (e) {
         console.error('Failed to load profile picture locally:', e);
         return null;
     }
 }
  
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Game state (stored locally per user) ────────────────────────────────────
+//
+// Saved shape:
+// {
+//   seed: number,
+//   difficulty: string,   // 'easy' | 'medium' | 'hard'
+//   grid: string[][],     // current user-entered grid
+//   seconds: number,      // elapsed time
+//   savedAt: string,      // ISO timestamp
+// }
+ 
+export async function saveGameState(username, state) {
+    try {
+        await localSet(`gameState_${username}`, { ...state, savedAt: new Date().toISOString() });
+    } catch (e) {
+        console.error('Failed to save game state:', e);
+    }
+}
+ 
+export async function loadGameState(username) {
+    try {
+        return await localGet(`gameState_${username}`);
+    } catch (e) {
+        console.error('Failed to load game state:', e);
+        return null;
+    }
+}
+ 
+export async function clearGameState(username) {
+    try {
+        await localDelete(`gameState_${username}`);
+    } catch (e) {
+        console.error('Failed to clear game state:', e);
+    }
+}
+ 
+// ── Param helper ─────────────────────────────────────────────────────────────
  
 // useLocalSearchParams can return string | string[] on web — always get a plain string
 export function resolveParam(param) {

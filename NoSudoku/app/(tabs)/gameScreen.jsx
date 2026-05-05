@@ -4,58 +4,93 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
-import { useLocalSearchParams } from 'expo-router'; 
+import { useLocalSearchParams } from 'expo-router';
 import Puzzle from '../../assets/gameScreen/Puzzle';
 import { useGame } from '../../context/GameContext';
 import { useRouter } from 'expo-router';
+import { saveGameState, loadGameState, clearGameState, resolveParam } from '../../assets/LoadNSave';
 
 const FIXED_SEED = 1;
 
 export default function GameScreen() {
-    const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
     const { addTime } = useGame();
-    const { difficulty, username } = useLocalSearchParams();
+    const params = useLocalSearchParams();
+    const difficulty = resolveParam(params.difficulty) || 'easy';
+    const username   = resolveParam(params.username);
+    const resume     = resolveParam(params.resume) === 'true';
     const router = useRouter();
-    const [selectedNumber, setSelectedNumber] = useState('');
-    const [seconds, setSeconds] = useState(0);
-    const [isSolved, setIsSolved] = useState(false);
-    const hasRecordedSolve = useRef(false);    
 
-    const puzzleGrid = puzzle.getPuzzleBoard();
+    const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
+    const puzzleGrid   = puzzle.getPuzzleBoard();
     const solutionGrid = puzzle.getSolvedBoard();
 
     const [grid, setGrid] = useState(() =>
         puzzleGrid.map((row) => row.map((cell) => (cell === 0 ? '' : String(cell))))
     );
+    const [seconds, setSeconds]     = useState(0);
+    const [isSolved, setIsSolved]   = useState(false);
+    const [isReady, setIsReady]     = useState(false);  // wait for resume load before rendering
+    const [selectedNumber, setSelectedNumber] = useState('');
+    const hasRecordedSolve = useRef(false);
 
-    // This is for the timer!
+    // ── On mount: load saved state if resuming ───────────────────────────────
     useEffect(() => {
-        if (isSolved) {
-            return undefined;
+        if (!resume) {
+            // Fresh game — clear any stale save for this user
+            clearGameState(username).finally(() => setIsReady(true));
+            return;
         }
 
+        loadGameState(username).then(saved => {
+            if (saved?.grid) {
+                setGrid(saved.grid);
+                setSeconds(saved.seconds ?? 0);
+            }
+            setIsReady(true);
+        }).catch(() => setIsReady(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Auto-save on every grid or timer change ──────────────────────────────
+    useEffect(() => {
+        if (!isReady || isSolved || !username) return;
+        saveGameState(username, {
+            seed: FIXED_SEED,
+            difficulty,
+            grid,
+            seconds,
+        });
+    }, [grid, seconds, isReady, isSolved, username, difficulty]);
+
+    // ── Timer ────────────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (isSolved || !isReady) return undefined;
+
         const interval = setInterval(() => {
-            setSeconds((prevSeconds) => prevSeconds + 1);
+            setSeconds((prev) => prev + 1);
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [isSolved]);
+    }, [isSolved, isReady]);
 
-    // This is for checking to see if it is it done
+    // ── Check for solve ──────────────────────────────────────────────────────
     useEffect(() => {
+        if (!isReady) return;
+
         const solved = grid.every((row, rowIndex) =>
             row.every((cell, colIndex) => cell === String(solutionGrid[rowIndex][colIndex]))
         );
 
-        if (!solved || isSolved) {
-            return;
-        }
+        if (!solved || isSolved) return;
 
         setIsSolved(true);
         setSelectedNumber('');
 
+        // Clear saved game — it's done
+        clearGameState(username);
+
         if (!hasRecordedSolve.current) {
-            const normalizedDifficulty = String(difficulty ?? 'easy').toLowerCase();
+            const normalizedDifficulty = difficulty.toLowerCase();
             const scoreKey = normalizedDifficulty === 'medium'
                 ? 'Medium'
                 : normalizedDifficulty === 'hard'
@@ -65,87 +100,90 @@ export default function GameScreen() {
             addTime(scoreKey, seconds);
             hasRecordedSolve.current = true;
         }
-    }, [addTime, difficulty, grid, isSolved, seconds, solutionGrid]);
+    }, [addTime, difficulty, grid, isSolved, isReady, seconds, solutionGrid, username]);
 
     const handleCellChange = (rowIndex, colIndex, value) => {
         const nextValue = value.replace(/[^1-9]/g, '').slice(0, 1);
-
         setSelectedNumber(nextValue);
-
         setGrid((prevGrid) =>
             prevGrid.map((row, currentRow) =>
                 row.map((cell, currentCol) => {
-                    if (currentRow !== rowIndex || currentCol !== colIndex) {
-                        return cell;
-                    }
-
+                    if (currentRow !== rowIndex || currentCol !== colIndex) return cell;
                     return nextValue;
                 })
             )
         );
     };
 
+    // Don't render until we've finished loading any saved state
+    if (!isReady) {
+        return (
+            <View style={styles.container}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             {isSolved ? (
                 <View style={styles.completionContainer}>
                     <Text style={styles.completionTitle}>Congratulations!</Text>
-                    <Text style={styles.completionText}>You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!</Text>
+                    <Text style={styles.completionText}>
+                        You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!
+                    </Text>
                     <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
-                    <Button title="View Stats" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
+                    <Button title="View Stats"   onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
                 </View>
             ) : (
                 <>
-                    <Timer seconds={seconds}/>
+                    <Timer seconds={seconds} />
                     <ShareButton />
 
                     <View style={styles.board}>
                         {grid.map((row, rowIndex) => (
-                        <View key={rowIndex} style={styles.row}>
-                            {row.map((cell, colIndex) => {
-                            const isRightBorder = (colIndex + 1) % 3 === 0 && colIndex !== 8;
-                            const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
-                            const isGiven = puzzleGrid[rowIndex][colIndex] !== 0;
-                            const isFilled = cell !== '';
-                            const isIncorrect = !isGiven
-                                && isFilled
-                                && cell !== String(solutionGrid[rowIndex][colIndex]);
-                            const isSelected = selectedNumber !== ''
-                                && String(isGiven ? puzzleGrid[rowIndex][colIndex] : cell) === selectedNumber;
+                            <View key={rowIndex} style={styles.row}>
+                                {row.map((cell, colIndex) => {
+                                    const isRightBorder  = (colIndex + 1) % 3 === 0 && colIndex !== 8;
+                                    const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+                                    const isGiven        = puzzleGrid[rowIndex][colIndex] !== 0;
+                                    const isFilled       = cell !== '';
+                                    const isIncorrect    = !isGiven && isFilled && cell !== String(solutionGrid[rowIndex][colIndex]);
+                                    const isSelected     = selectedNumber !== '' && String(isGiven ? puzzleGrid[rowIndex][colIndex] : cell) === selectedNumber;
 
-                            return (
-                                <View
-                                key={`${rowIndex}-${colIndex}`}
-                                style={[
-                                    styles.cell,
-                                    isGiven && styles.givenCell,
-                                    isSelected && styles.selectedCell,
-                                    isIncorrect && styles.incorrectCell,
-                                    isRightBorder && styles.rightBorder,
-                                    isBottomBorder && styles.bottomBorder,
-                                ]}
-                                >
-                                {isGiven ? (
-                                    <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
-                                ) : (
-                                    <TextInput
-                                        style={[styles.cellInput, isIncorrect && styles.incorrectText]}
-                                        value={cell}
-                                        onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
-                                        keyboardType="number-pad"
-                                        maxLength={1}
-                                        textAlign="center"
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                        caretHidden={!isSolved}
-                                        contextMenuHidden={!isSolved}
-                                        editable={!isSolved}
-                                    />
-                                )}
-                                </View>
-                            );
-                            })}
-                        </View>
+                                    return (
+                                        <View
+                                            key={`${rowIndex}-${colIndex}`}
+                                            style={[
+                                                styles.cell,
+                                                isGiven       && styles.givenCell,
+                                                isSelected    && styles.selectedCell,
+                                                isIncorrect   && styles.incorrectCell,
+                                                isRightBorder  && styles.rightBorder,
+                                                isBottomBorder && styles.bottomBorder,
+                                            ]}
+                                        >
+                                            {isGiven ? (
+                                                <Text style={styles.cellText}>{puzzleGrid[rowIndex][colIndex]}</Text>
+                                            ) : (
+                                                <TextInput
+                                                    style={[styles.cellInput, isIncorrect && styles.incorrectText]}
+                                                    value={cell}
+                                                    onChangeText={(value) => handleCellChange(rowIndex, colIndex, value)}
+                                                    keyboardType="number-pad"
+                                                    maxLength={1}
+                                                    textAlign="center"
+                                                    autoCorrect={false}
+                                                    autoCapitalize="none"
+                                                    caretHidden={!isSolved}
+                                                    contextMenuHidden={!isSolved}
+                                                    editable={!isSolved}
+                                                />
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                            </View>
                         ))}
                     </View>
 
@@ -160,12 +198,12 @@ export default function GameScreen() {
     );
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
     container: {
         backgroundColor: "white",
         flex: 1,
         alignItems: "center",
-        justifyContent: "center", 
+        justifyContent: "center",
     },
     completionContainer: {
         alignItems: "center",
@@ -198,20 +236,10 @@ const styles = StyleSheet.create ({
         justifyContent: "center",
         backgroundColor: "white",
     },
-    givenCell: {
-        backgroundColor: "#eef2f7",
-    },
-    selectedCell: {
-        backgroundColor: "#fff4b8",
-    },
-    incorrectCell: {
-        backgroundColor: "#ffd6d6",
-        borderColor: "#d64545",
-    },
-    cellText: {
-        fontSize: 18,
-        fontWeight: "600",
-    },
+    givenCell:     { backgroundColor: "#eef2f7" },
+    selectedCell:  { backgroundColor: "#fff4b8" },
+    incorrectCell: { backgroundColor: "#ffd6d6", borderColor: "#d64545" },
+    cellText:  { fontSize: 18, fontWeight: "600" },
     cellInput: {
         width: "100%",
         height: "100%",
@@ -222,13 +250,7 @@ const styles = StyleSheet.create ({
         textAlign: "center",
         textAlignVertical: "center",
     },
-    incorrectText: {
-        color: "#b00020",
-    },
-    rightBorder: {
-        borderRightWidth: 3,
-    },
-    bottomBorder: {
-        borderBottomWidth: 3,
-    },
+    incorrectText: { color: "#b00020" },
+    rightBorder:   { borderRightWidth: 3 },
+    bottomBorder:  { borderBottomWidth: 3 },
 });
