@@ -57,7 +57,7 @@ const router = useRouter();
             </TouchableOpacity>
             <Text style={styles.subtitle}>Username: {username}</Text>
             <Text style={styles.subtitle}>Date Joined: {dateJoined}</Text>
-            <Button title="Back to Home" onPress={() => router.push('/(tabs)/')} />
+            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
         </View>
     );
 }
