@@ -43,7 +43,7 @@ const snap = async () => {
         
         await saveUsers(users);
         console.log('saved photo for user:', username);
-        router.back();
+        router.replace({ pathname: '/(tabs)/userProfileScreen', params: { username } });
     }
 };
 

@@ -5,40 +5,47 @@ import { useFocusEffect } from '@react-navigation/native';
 import { loadUsers, saveUsers } from '../../assets/LoadNSave.js';
 
 export default function UserProfileScreen() {
-    const router = useRouter();
-    const { username: routeUsername } = useLocalSearchParams();
+const router = useRouter();
+    
+    const { username: incomingUsername } = useLocalSearchParams(); 
 
     const [profilePicture, setProfilePicture] = useState(null);
-    const [username, setUsername] = useState(routeUsername ?? '');
+    const [username, setUsername] = useState('');
     const [dateJoined, setDateJoined] = useState('');
 
-    // Runs every time this screen comes into focus (including after camera closes)
     useFocusEffect(
         useCallback(() => {
             const fetchUser = async () => {
-                const lookupUsername = routeUsername || username;
-                if (!lookupUsername) return;
+                console.log('Fetching data for:', incomingUsername);
                 const users = await loadUsers();
-                console.log('profile fetch for', lookupUsername, 'all users:', JSON.stringify(users));
-                const user = users.find(u => u.username === lookupUsername);
-                setProfilePicture(user?.profilePicture ?? null);
-                setUsername(user?.username ?? lookupUsername);
-                setDateJoined(user?.dateJoined ?? '');
+                
+                const user = users.find(u => u.username === incomingUsername);
+                
+                if (user) {
+                    setProfilePicture(user.profilePicture);
+                    setUsername(user.username);
+                    setDateJoined(user.dateJoined);
+                } else {
+                    setUsername(incomingUsername || 'Guest');
+                    setDateJoined('Not found');
+                }
             };
+
             fetchUser();
-        }, [routeUsername, username])
+        }, [incomingUsername]) 
     );
 
-const handleUpdatePicture = () => {
-    router.push({ pathname: '/camera', params: { username: routeUsername || username } });
-};
+    const handleUpdatePicture = () => {
+        // Use incomingUsername here too
+        router.push(`/camera?username=${encodeURIComponent(incomingUsername || username)}`);
+    };
 
     const imageSource = profilePicture
         ? { uri: profilePicture }
         : require('../../assets/images/defaultIcon.svg.png');
 
     return (
-        <View style={styles.container}>            
+        <View style={styles.container}>
             <Button title="Clear Users" onPress={async () => {
                 await saveUsers([]);
                 console.log('cleared!');
