@@ -28,6 +28,7 @@ export default function LoginScreen() {
             existingUser = {
                 username: username,
                 dateJoined: new Date().toISOString().split('T')[0],
+                profilePicture: null,
             };
             const updatedUsers = [...users, existingUser];
             try {
