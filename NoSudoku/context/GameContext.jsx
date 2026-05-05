@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import saveScores from '../assets/LoadNSave';
+import { saveScores } from '../assets/LoadNSave';  // named import, not default
 
 const GameContext = createContext();
 
@@ -31,12 +31,11 @@ export function GameProvider({ children }) {
     ]);
   }
 
-  const updateUser = (name, boad = null, seed = null, friendlist = null) =>{
-
-    if(!board == null || !seed == null){
+  const updateUser = (name, board = null, seed = null, friendlist = null) => {
+    if (!board == null || !seed == null) {
       // the users board and seed here.
     }
-    if(!friendlist == null){
+    if (!friendlist == null) {
       // ADD FRIENDS HERE TODO:
     }
   }
@@ -52,15 +51,18 @@ export function GameProvider({ children }) {
     setScores((prev) => {
       const updated = [...prev[difficulty], newScore]
         .sort((a, b) => a.time - b.time)
-        .slice(0, 10); // Grabs Top ten per
+        .slice(0, 10); // Grabs Top ten per difficulty
 
-      return {
+      const newScores = {
         ...prev,
         [difficulty]: updated,
       };
-    });
 
-    saveScores(scores);
+      // Save the updated scores, not the stale closure value
+      saveScores(newScores).catch(e => console.error('Failed to save scores:', e));
+
+      return newScores;
+    });
   };
 
   const addTime = (difficulty, time) => {

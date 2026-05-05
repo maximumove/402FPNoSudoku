@@ -2,12 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { loadUsers, saveUsers } from '../../assets/LoadNSave.js';
+import { loadUsers, saveUsers, loadProfilePicture, resolveParam } from '../../assets/LoadNSave.js';
 
 export default function UserProfileScreen() {
-const router = useRouter();
-    
-    const { username: incomingUsername } = useLocalSearchParams(); 
+    const router = useRouter();
+
+    const params = useLocalSearchParams();
+    const incomingUsername = resolveParam(params.username);
 
     const [profilePicture, setProfilePicture] = useState(null);
     const [username, setUsername] = useState('');
@@ -19,41 +20,39 @@ const router = useRouter();
                 console.log('Fetching data for:', incomingUsername);
                 const users = await loadUsers();
                 console.log('All users:', users);
-                
+
                 const trimmedUsername = incomingUsername?.trim();
                 const user = users.find(u => u.username?.trim() === trimmedUsername);
                 console.log('Found user:', user);
-                
+
                 if (user) {
-                    setProfilePicture(user.profilePicture || null);
                     setUsername(user.username);
                     setDateJoined(user.dateJoined || 'N/A');
                 } else if (trimmedUsername) {
-                    // User not found on server yet (e.g. save hadn't propagated) —
-                    // create the record now so the profile is always populated.
+                    // Not on server yet — create and save
                     const today = new Date().toISOString().split('T')[0];
-                    const newUser = {
-                        username: trimmedUsername,
-                        dateJoined: today,
-                        profilePicture: null,
-                    };
-                    const updatedUsers = [...users, newUser];
+                    const newUser = { username: trimmedUsername, dateJoined: today };
                     try {
-                        await saveUsers(updatedUsers);
+                        await saveUsers([...users, newUser]);
                     } catch (e) {
                         console.error('Failed to save new user from profile screen:', e);
                     }
                     setUsername(trimmedUsername);
                     setDateJoined(today);
-                    setProfilePicture(null);
                 } else {
                     setUsername('Guest');
                     setDateJoined('N/A');
                 }
+
+                // Load picture from local storage (not the server)
+                if (trimmedUsername) {
+                    const pic = await loadProfilePicture(trimmedUsername);
+                    setProfilePicture(pic);
+                }
             };
 
             fetchUser();
-        }, [incomingUsername]) 
+        }, [incomingUsername])
     );
 
     const handleUpdatePicture = () => {
