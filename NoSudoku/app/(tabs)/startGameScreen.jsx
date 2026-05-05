@@ -1,7 +1,7 @@
 // This screen will be where the user can start a new game, continue a saved game, or select a difficulty level.
 // Add imports as needed
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 export default function StartGameScreen() {
@@ -15,15 +15,6 @@ export default function StartGameScreen() {
             <Button title="Start New Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
             <Button title="Continue Saved Game" onPress={() => router.push('/(tabs)/gameScreen?username=' + encodeURIComponent(username))} />
             <Text style = {styles.title}>Select Difficulty</Text>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/gameScreen?difficulty=easy&username=' + encodeURIComponent(username))} style={styles.button}>
-                <Text style={styles.buttonText}>Easy</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/gameScreen?difficulty=medium&username=' + encodeURIComponent(username))} style={styles.button}>
-                <Text style={styles.buttonText}>Medium</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/gameScreen?difficulty=hard&username=' + encodeURIComponent(username))} style={styles.button}>
-                <Text style={styles.buttonText}>Hard</Text>
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/(tabs)/gameScreen?difficulty=easy&username=' + encodeURIComponent(username))} style={styles.button}>
                 <Text style={styles.buttonText}>Easy</Text>
             </TouchableOpacity>
