@@ -10,11 +10,15 @@ export default function StatsScreen() {
     const [scores, setScores] = React.useState([]);
 
     React.useEffect(() => {
-        loadScores().then(loadedScores => setScores(loadedScores));
+        loadScores()
+        .then(loadedScores => {
+            if (loadedScores) setScores(loadedScores);
+        })
+        .catch(e => console.error('scores error:', e));
     }, []);
 
     const allScores = Object.values(scores).flat();
-    const userScores = allScores.filter(score => score.username === username);
+    const userScores = allScores.filter(score => score.user === username);
     const bestTime = userScores.length > 0 ? Math.min(...userScores.map(score => score.time)) : null;
     const averageTime = userScores.length > 0 ? userScores.reduce((sum, score) => sum + score.time, 0) / userScores.length : null;
 

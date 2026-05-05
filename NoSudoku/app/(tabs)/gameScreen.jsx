@@ -219,6 +219,8 @@ const styles = StyleSheet.create ({
         fontWeight: "600",
         padding: 0,
         margin: 0,
+        textAlign: "center",
+        textAlignVertical: "center",
     },
     incorrectText: {
         color: "#b00020",

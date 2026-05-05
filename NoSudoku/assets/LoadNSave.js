@@ -7,31 +7,43 @@ const saveScoresLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/
 const saveUsersLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/savejson.php?user=Team3Users';
 
 export async function loadUsers(){
-    const response = await fetch(loadUsersLink);
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch(loadUsersLink);
+        const text = await response.text();
+        if (!text || text.trim() === '') return [];
+        return JSON.parse(text);
+    } catch (e) {
+        console.error('Failed to load users:', e);
+        return [];
+    }
 }
 
 export async function loadScores(){
-    const response = await fetch(loadScoresLink);
-    const data = await response.json();
+    try {
+        const response = await fetch(loadScoresLink);
+        const text = await response.text();
+        if (!text || text.trim() === '') return { Easy: [], Medium: [], Hard: [] };
+        const data = JSON.parse(text);
 
-    const grouped = {
-        Easy: [],
-        Medium: [],
-        Hard: [],
-    };
+        const grouped = { Easy: [], Medium: [], Hard: [] };
+        data.forEach((item) => {
+            if (grouped[item.difficulty]) {
+                grouped[item.difficulty].push({
+                    user: item.user,
+                    time: item.time,
+                });
+            }
+        });
+        return grouped;
+    } catch (e) {
+        console.error('Failed to load scores:', e);
+        return { Easy: [], Medium: [], Hard: [] };
+    }
+}
 
-    data.forEach((item) => {
-        if (grouped[item.difficulty]) {
-            grouped[item.difficulty].push({
-                user: item.user,
-                time: item.time,
-            });
-        }
-    });
-
-    return grouped;
+export async function loadUser(username) {
+    const users = await loadUsers();
+    return users.find(u => u.username === username) || null;
 }
 
 // ================================= //
@@ -47,6 +59,17 @@ export async function saveUsers(users){
     };
 
     await fetch(saveUsersLink, requestOptions);
+}
+
+export async function saveUser(updatedUser) {
+    const users = await loadUsers();
+    const index = users.findIndex(u => u.username === updatedUser.username);
+    if (index !== -1) {
+        users[index] = updatedUser; // update existing user
+    } else {
+        users.push(updatedUser); // add new user
+    }
+    await saveUsers(users);
 }
 
 export async function saveScores(scores){
