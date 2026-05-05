@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system/legacy';
  
 // Loading
 const loadScoresLink = 'https://mec402.boisestate.edu/csclasses/cs402/codesnips/loadjson.php?user=Team3Scores';
@@ -47,17 +48,33 @@ async function localDelete(key) {
  
 export async function saveProfilePicture(username, dataUri) {
     try {
-        await localSet(`profilePic_${username}`, dataUri);
+        if (Platform.OS === 'web') {
+            await localSet(`profilePic_${username}`, dataUri);
+        } else {
+            const base64 = dataUri.split(',')[1]; // Extract base64 part
+            const fileUri = FileSystem.documentDirectory + `${username}_profile.jpg`;
+            await FileSystem.writeAsStringAsync(fileUri, base64, { encoding: FileSystem.EncodingType.Base64 });
+        }
     } catch (e) {
-        console.error('Failed to save profile picture locally:', e);
+        console.error('Failed to save profile picture:', e);
     }
 }
  
 export async function loadProfilePicture(username) {
     try {
-        return await localGet(`profilePic_${username}`);
+        if (Platform.OS === 'web') {
+            return await localGet(`profilePic_${username}`);
+        } else {
+            const fileUri = FileSystem.documentDirectory + `${username}_profile.jpg`;
+            const info = await FileSystem.getInfoAsync(fileUri);
+            if (info.exists) {
+                const base64 = await FileSystem.readAsStringAsync(fileUri, { encoding: FileSystem.EncodingType.Base64 });
+                return `data:image/jpeg;base64,${base64}`;
+            }
+            return null;
+        }
     } catch (e) {
-        console.error('Failed to load profile picture locally:', e);
+        console.error('Failed to load profile picture:', e);
         return null;
     }
 }
