@@ -38,6 +38,9 @@ OR
 ## Reflections && Design Choices
 
 ### Troy Berhow
+	This was perhaps my favorite project I have ever worked on, once I actually was able to work on it. My group was very chill and were willing to work on whatever was needed at the time. I really appriciate that. I also liked learning more about not only react native, but coding in general. Looking at some actual logic for a game was really nice to me, as I have had a desire to be a game designer. Jay's board gen logic was really fun to disect.
+
+	My design choices include the general color scheme of the program (I much perfer dark themes to light, and the blue color for the text really pops) as well as the placement of the buttons (it made sense to me to have back to home at the bottom, as most would see that last so they could take in new info in a screen). The layout of the login screen and home screen was also done do make it easy to take in. I also made it so that the mobile version had less on it (no boarder around the buttons) since the screens are smaller and it would have cluttered the screen. Finally, the little victory screen after a board is completed is meant to feel rewarding, and thus contrasts with the rest of the program to make that accomplishment stand out.
 
 ### Emily Newton
 
