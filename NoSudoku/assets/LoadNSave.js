@@ -22,7 +22,7 @@ export async function loadScores(){
     try {
         const response = await fetch(loadScoresLink);
         const text = await response.text();
-        if (!text || text.trim() === '') return { Easy: [], Medium: [], Hard: [] };
+        if (!text || text.trim() === '' || text.trim() === 'Undefined') return { Easy: [], Medium: [], Hard: [] };
         const data = JSON.parse(text);
 
         const grouped = { Easy: [], Medium: [], Hard: [] };
