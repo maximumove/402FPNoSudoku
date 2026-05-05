@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, TextInput, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { loadUsers, saveUsers } from '../assets/LoadNSave.js';
 
@@ -7,6 +7,8 @@ export default function LoginScreen() {
     const router = useRouter();
     const [username, setUsername] = React.useState('');
     const [users, setUsers] = React.useState([]);
+    const { width, height } = useWindowDimensions();
+    const isLandscape = Platform.OS !== 'web' && width > height;
 
     React.useEffect(() => {
         loadUsers().then(loadedUsers => setUsers(loadedUsers || [])).catch(error => {
@@ -22,9 +24,8 @@ export default function LoginScreen() {
         }
 
         let existingUser = users.find(user => user.username === username);
-        
+
         if (!existingUser) {
-            // Create new user
             existingUser = {
                 username: username,
                 dateJoined: new Date().toISOString().split('T')[0],
@@ -35,7 +36,6 @@ export default function LoginScreen() {
                 await saveUsers(updatedUsers);
             } catch (error) {
                 console.error('Failed to save user:', error);
-                // Still proceed to login
             }
         }
 
@@ -43,37 +43,39 @@ export default function LoginScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={[styles.container, isLandscape && styles.containerLandscape]}>
+            <Text style={[styles.title, isLandscape && styles.titleLandscape]}>NoSudoku</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, isLandscape && styles.inputLandscape]}
                 placeholder="Enter your username"
                 value={username}
                 onChangeText={setUsername}
             />
             <Button title="Login" onPress={handleLogin} />
-        </View>
+        </ScrollView>
     );
 }
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#222222a4',
-      },
-      title: {
+        paddingVertical: 40,
+    },
+    containerLandscape: {
+        paddingVertical: 20,
+    },
+    title: {
         fontSize: 40,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 30,
         color: '#0f5ed5',
-      },
-    button: {
-      marginVertical: 10,
-      backgroundColor: '#007BFF',
-      color: '#fff',
-      padding: 10,
-      borderRadius: 25,
+    },
+    titleLandscape: {
+        fontSize: 28,
+        marginBottom: 16,
     },
     input: {
         height: 40,
@@ -83,5 +85,10 @@ const styles = StyleSheet.create ({
         paddingHorizontal: 10,
         width: '80%',
         color: '#0f5ed5',
+        backgroundColor: '#fff',
+        borderRadius: 6,
+    },
+    inputLandscape: {
+        width: '50%',
     },
 });

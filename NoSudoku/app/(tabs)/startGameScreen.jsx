@@ -1,6 +1,5 @@
-// This screen will be where the user can start a new game, continue a saved game, or select a difficulty level.
 import React, { useState, useCallback } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { loadGameState, resolveParam } from '../../assets/LoadNSave';
@@ -9,10 +8,11 @@ export default function StartGameScreen() {
     const router = useRouter();
     const params = useLocalSearchParams();
     const username = resolveParam(params.username);
+    const { width, height } = useWindowDimensions();
+    const isLandscape = Platform.OS !== 'web' && width > height;
 
     const [hasSavedGame, setHasSavedGame] = useState(false);
 
-    // Re-check for a saved game every time this screen comes into focus
     useFocusEffect(
         useCallback(() => {
             loadGameState(username).then(saved => {
@@ -32,17 +32,14 @@ export default function StartGameScreen() {
 
     const continueSaved = () => {
         if (!hasSavedGame) return;
-        router.push(
-            '/(tabs)/gameScreen?resume=true&username=' +
-            encodeURIComponent(username)
-        );
+        router.push('/(tabs)/gameScreen?resume=true&username=' + encodeURIComponent(username));
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Start Game Screen</Text>
+        <ScrollView contentContainerStyle={[styles.container, isLandscape && styles.containerLandscape]}>
+            <Text style={[styles.title, isLandscape && styles.titleLandscape]}>Start Game</Text>
 
-            {/* Continue — only active if there is a saved game */}
+            {/* Continue button */}
             <TouchableOpacity
                 onPress={continueSaved}
                 style={[styles.button, !hasSavedGame && styles.buttonDisabled]}
@@ -53,35 +50,68 @@ export default function StartGameScreen() {
                 </Text>
             </TouchableOpacity>
 
-            <Text style={styles.title}>Start New Game</Text>
-            <TouchableOpacity onPress={() => startNew('easy')}   style={styles.button}>
-                <Text style={styles.buttonText}>Easy</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => startNew('medium')} style={styles.button}>
-                <Text style={styles.buttonText}>Medium</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => startNew('hard')}   style={styles.button}>
-                <Text style={styles.buttonText}>Hard</Text>
-            </TouchableOpacity>
+            <Text style={[styles.sectionTitle, isLandscape && styles.sectionTitleLandscape]}>
+                Start New Game
+            </Text>
 
-            <Text style={styles.title}>Return to Home</Text>
+            {/* Difficulty buttons — row in landscape, column in portrait */}
+            <View style={isLandscape ? styles.difficultyRowLandscape : styles.difficultyCol}>
+                <TouchableOpacity onPress={() => startNew('easy')}   style={styles.button}>
+                    <Text style={styles.buttonText}>Easy</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => startNew('medium')} style={styles.button}>
+                    <Text style={styles.buttonText}>Medium</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => startNew('hard')}   style={styles.button}>
+                    <Text style={styles.buttonText}>Hard</Text>
+                </TouchableOpacity>
+            </View>
+
             <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#222222a4',
+        paddingVertical: 20,
+    },
+    containerLandscape: {
+        paddingVertical: 10,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#11269e',
+    },
+    titleLandscape: {
+        fontSize: 20,
+        marginBottom: 10,
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 16,
+        marginBottom: 10,
+        color: '#11269e',
+    },
+    sectionTitleLandscape: {
+        marginTop: 8,
+        marginBottom: 6,
+    },
+    difficultyCol: {
+        alignItems: 'center',
+        width: '100%',
+    },
+    difficultyRowLandscape: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 12,
     },
     button: {
         backgroundColor: '#11269e',
@@ -100,3 +130,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
