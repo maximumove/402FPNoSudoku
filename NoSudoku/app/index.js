@@ -81,5 +81,6 @@ const styles = StyleSheet.create ({
         marginBottom: 20,
         paddingHorizontal: 10,
         width: '80%',
+        color: '#0f5ed5',
     },
 });
