@@ -18,16 +18,37 @@ const router = useRouter();
             const fetchUser = async () => {
                 console.log('Fetching data for:', incomingUsername);
                 const users = await loadUsers();
+                console.log('All users:', users);
                 
-                const user = users.find(u => u.username === incomingUsername);
+                const trimmedUsername = incomingUsername?.trim();
+                const user = users.find(u => u.username?.trim() === trimmedUsername);
+                console.log('Found user:', user);
                 
                 if (user) {
-                    setProfilePicture(user.profilePicture);
+                    setProfilePicture(user.profilePicture || null);
                     setUsername(user.username);
-                    setDateJoined(user.dateJoined);
+                    setDateJoined(user.dateJoined || 'N/A');
+                } else if (trimmedUsername) {
+                    // User not found on server yet (e.g. save hadn't propagated) —
+                    // create the record now so the profile is always populated.
+                    const today = new Date().toISOString().split('T')[0];
+                    const newUser = {
+                        username: trimmedUsername,
+                        dateJoined: today,
+                        profilePicture: null,
+                    };
+                    const updatedUsers = [...users, newUser];
+                    try {
+                        await saveUsers(updatedUsers);
+                    } catch (e) {
+                        console.error('Failed to save new user from profile screen:', e);
+                    }
+                    setUsername(trimmedUsername);
+                    setDateJoined(today);
+                    setProfilePicture(null);
                 } else {
-                    setUsername(incomingUsername || 'Guest');
-                    setDateJoined('Not found');
+                    setUsername('Guest');
+                    setDateJoined('N/A');
                 }
             };
 
@@ -36,7 +57,6 @@ const router = useRouter();
     );
 
     const handleUpdatePicture = () => {
-        // Use incomingUsername here too
         router.push(`/camera?username=${encodeURIComponent(incomingUsername || username)}`);
     };
 

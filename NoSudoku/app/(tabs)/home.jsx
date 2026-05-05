@@ -19,12 +19,7 @@ export default function HomeScreen() {
         <Text style={styles.subtitle}>See how your score compares to others!</Text>
         <Button style = {styles.button} title="View Leaderboard" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(displayUsername))} />
         <Text style={styles.subtitle}>Adjust user or game settings.</Text>
-        <Button title="Settings" onPress={() => router.push({
-          
-          pathname: '/(tabs)/userProfileScreen',
-          params: { username: displayUsername } 
-        })} 
-      />
+        <Button title="Settings" onPress={() => router.push('/(tabs)/userProfileScreen?username=' + encodeURIComponent(displayUsername))} />
     </View>
   );
 }
