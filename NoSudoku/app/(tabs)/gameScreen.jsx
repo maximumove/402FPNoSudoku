@@ -209,35 +209,39 @@ export default function GameScreen() {
     if (isLandscape) {
         // Landscape: board on the left, controls on the right
         return (
-            <View style={styles.landscapeContainer}>
-                <View style={styles.landscapeLeft}>
-                    {board}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.landscapeContainer}>
+                    <View style={styles.landscapeLeft}>
+                        {board}
+                    </View>
+                    <View style={styles.landscapeRight}>
+                        <Timer seconds={seconds} />
+                        <ShareButton />
+                        <NumberTracker
+                            board={grid}
+                            selectedNumber={selectedNumber}
+                            onSelectNumber={setSelectedNumber}
+                        />
+                    </View>
                 </View>
-                <View style={styles.landscapeRight}>
-                    <Timer seconds={seconds} />
-                    <ShareButton />
-                    <NumberTracker
-                        board={grid}
-                        selectedNumber={selectedNumber}
-                        onSelectNumber={setSelectedNumber}
-                    />
-                </View>
-            </View>
+            </TouchableWithoutFeedback>
         );
     }
 
     // Portrait: stacked layout
     return (
-        <View style={styles.container}>
-            <Timer seconds={seconds} />
-            <ShareButton seed={seed} />
-            {board}
-            <NumberTracker
-                board={grid}
-                selectedNumber={selectedNumber}
-                onSelectNumber={setSelectedNumber}
-            />
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
+            <View style={styles.container}>
+                <Timer seconds={seconds} />
+                <ShareButton />
+                {board}
+                <NumberTracker
+                    board={grid}
+                    selectedNumber={selectedNumber}
+                    onSelectNumber={setSelectedNumber}
+                />
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 
