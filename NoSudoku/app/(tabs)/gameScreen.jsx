@@ -142,12 +142,14 @@ export default function GameScreen() {
     }
 
     const board = (
-        <View style={{ borderWidth: 3, marginTop: 3 }}>
+        <View style={{ borderWidth: 3, borderColor: '#000', marginTop: 3 }}>
             {grid.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.row}>
                     {row.map((cell, colIndex) => {
-                        const isRightBorder  = (colIndex + 1) % 3 === 0 && colIndex !== 8;
-                        const isBottomBorder = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+                        const borderLeftWidth = colIndex === 0 ? 3 : (colIndex % 3 === 0 ? 3 : 1);
+                        const borderRightWidth = colIndex === 8 ? 3 : ((colIndex + 1) % 3 === 0 ? 3 : 1);
+                        const borderTopWidth = rowIndex === 0 ? 3 : (rowIndex % 3 === 0 ? 3 : 1);
+                        const borderBottomWidth = rowIndex === 8 ? 3 : ((rowIndex + 1) % 3 === 0 ? 3 : 1);
                         const isGiven        = puzzleGrid[rowIndex][colIndex] !== 0;
                         const isFilled       = cell !== '';
                         const isIncorrect    = !isGiven && isFilled && cell !== String(solutionGrid[rowIndex][colIndex]);
@@ -160,7 +162,11 @@ export default function GameScreen() {
                                     {
                                         width: cellSize,
                                         height: cellSize,
-                                        borderWidth: 1,
+                                        borderLeftWidth,
+                                        borderRightWidth,
+                                        borderTopWidth,
+                                        borderBottomWidth,
+                                        borderColor: '#000',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         backgroundColor: 'white',
@@ -168,8 +174,6 @@ export default function GameScreen() {
                                     isGiven       && styles.givenCell,
                                     isSelected    && styles.selectedCell,
                                     isIncorrect   && styles.incorrectCell,
-                                    isRightBorder  && styles.rightBorder,
-                                    isBottomBorder && styles.bottomBorder,
                                 ]}
                             >
                                 {isGiven ? (
@@ -295,6 +299,4 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
     },
     incorrectText: { color: '#b00020' },
-    rightBorder:   { borderRightWidth: 3 },
-    bottomBorder:  { borderBottomWidth: 3 },
 });
