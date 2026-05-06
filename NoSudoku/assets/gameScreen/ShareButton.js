@@ -3,11 +3,10 @@ import { View, Button, Alert } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useGame } from "../../context/GameContext";
 
-const ShareButton = () => {
-  const { seed } = useGame();
+const ShareButton = ({seed}) => {
 
   const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(String(seed));
+    await Clipboard.setStringAsync(seed);
     Alert.alert("Copied!", `Seed "${seed}" is ready to paste`);
   };
 

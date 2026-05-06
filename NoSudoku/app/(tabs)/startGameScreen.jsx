@@ -21,7 +21,7 @@ export default function StartGameScreen() {
         }, [username])
     );
 
-    const startNew = (difficulty = 'easy') => {
+    const startNew = (difficulty = 'E') => {
         router.push(
             '/(tabs)/gameScreen?resume=false&difficulty=' +
             encodeURIComponent(difficulty) +
@@ -56,13 +56,13 @@ export default function StartGameScreen() {
 
             {/* Difficulty buttons — row in landscape, column in portrait */}
             <View style={isLandscape ? styles.difficultyRowLandscape : styles.difficultyCol}>
-                <TouchableOpacity onPress={() => startNew('easy')}   style={styles.button}>
+                <TouchableOpacity onPress={() => startNew('E')}   style={styles.button}>
                     <Text style={styles.buttonText}>Easy</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => startNew('medium')} style={styles.button}>
+                <TouchableOpacity onPress={() => startNew('Me')} style={styles.button}>
                     <Text style={styles.buttonText}>Medium</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => startNew('hard')}   style={styles.button}>
+                <TouchableOpacity onPress={() => startNew('H')}   style={styles.button}>
                     <Text style={styles.buttonText}>Hard</Text>
                 </TouchableOpacity>
             </View>

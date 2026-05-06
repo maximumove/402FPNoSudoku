@@ -10,21 +10,20 @@ import { useGame } from '../../context/GameContext';
 import { useRouter } from 'expo-router';
 import { saveGameState, loadGameState, clearGameState, resolveParam } from '../../assets/LoadNSave';
 
-const FIXED_SEED = 1;
-
 export default function GameScreen() {
     const { addTime } = useGame();
     const params = useLocalSearchParams();
-    const difficulty = resolveParam(params.difficulty) || 'easy';
+    const difficulty = resolveParam(params.difficulty) || 'E';
     const username   = resolveParam(params.username);
     const resume     = resolveParam(params.resume) === 'true';
     const router     = useRouter();
     const { width, height } = useWindowDimensions();
     const isLandscape = Platform.OS !== 'web' && width > height;
 
-    const [puzzle] = useState(() => new Puzzle('E', FIXED_SEED));
+    const [puzzle] = useState(() => new Puzzle(difficulty));
     const puzzleGrid   = puzzle.getPuzzleBoard();
     const solutionGrid = puzzle.getSolvedBoard();
+    const seed = puzzle.getSeed();
 
     const [grid, setGrid]         = useState(() =>
         puzzleGrid.map((row) => row.map((cell) => (cell === 0 ? '' : String(cell))))
@@ -62,7 +61,7 @@ export default function GameScreen() {
     // ── Auto-save ────────────────────────────────────────────────────────────
     useEffect(() => {
         if (!isReady || isSolved || !username) return;
-        saveGameState(username, { seed: FIXED_SEED, difficulty, grid, seconds });
+        saveGameState(username, { seed: seed, difficulty, grid, seconds });
     }, [grid, seconds, isReady, isSolved, username, difficulty]);
 
     // ── Timer ────────────────────────────────────────────────────────────────
@@ -231,7 +230,7 @@ export default function GameScreen() {
     return (
         <View style={styles.container}>
             <Timer seconds={seconds} />
-            <ShareButton />
+            <ShareButton seed={seed} />
             {board}
             <NumberTracker
                 board={grid}
@@ -299,4 +298,6 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
     },
     incorrectText: { color: '#b00020' },
+    rightBorder:   { borderRightWidth: 3, borderColor: '#000000'},
+    bottomBorder:  { borderBottomWidth: 3 },
 });
