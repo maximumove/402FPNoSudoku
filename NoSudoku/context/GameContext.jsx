@@ -48,6 +48,8 @@ export function GameProvider({ children }) {
   });
 
   const addScore = (difficulty, newScore) => {
+    let flatScores = null;
+
     setScores((prev) => {
       const updated = [...prev[difficulty], newScore]
         .sort((a, b) => a.time - b.time)
@@ -58,15 +60,27 @@ export function GameProvider({ children }) {
         [difficulty]: updated,
       };
 
-      // Save the updated scores, not the stale closure value
-      saveScores(newScores).catch(e => console.error('Failed to save scores:', e));
+      flatScores = [
+        ...newScores.Easy.map(s => ({ ...s, difficulty: 'Easy' })),
+        ...newScores.Medium.map(s => ({ ...s, difficulty: 'Medium' })),
+        ...newScores.Hard.map(s => ({ ...s, difficulty: 'Hard' })),
+      ];
 
       return newScores;
+    });
+
+    if (!flatScores) {
+      return Promise.resolve();
+    }
+
+    return saveScores(flatScores).catch(e => {
+      console.error('Failed to save scores:', e);
+      throw e;
     });
   };
 
   const addTime = (difficulty, time, username = currentUser) => {
-    addScore(difficulty, { user: username, time: time });
+    return addScore(difficulty, { user: username, time: time });
   };
 
   return <GameContext.Provider value={{

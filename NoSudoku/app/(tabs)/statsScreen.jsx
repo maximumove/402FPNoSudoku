@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { loadScores, resolveParam } from '../../assets/LoadNSave.js';
+import { resolveParam } from '../../assets/LoadNSave.js';
+import { useGame } from '../../context/GameContext';
 
 export default function StatsScreen() {
     const router = useRouter();
@@ -10,13 +11,7 @@ export default function StatsScreen() {
     const { width, height } = useWindowDimensions();
     const isLandscape = Platform.OS !== 'web' && width > height;
 
-    const [scores, setScores] = React.useState([]);
-
-    React.useEffect(() => {
-        loadScores()
-            .then(loadedScores => { if (loadedScores) setScores(loadedScores); })
-            .catch(e => console.error('scores error:', e));
-    }, []);
+    const { scores } = useGame();
 
     const allScores = Object.values(scores).flat();
     const userScores = allScores.filter(score => score.user === username);

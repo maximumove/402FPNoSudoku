@@ -33,6 +33,8 @@ export default function GameScreen() {
     const [isSolved, setIsSolved]   = useState(false);
     const [isReady, setIsReady]     = useState(false);
     const [selectedNumber, setSelectedNumber] = useState('');
+    const [scoreSaving, setScoreSaving] = useState(false);
+    const [scoreSaved, setScoreSaved] = useState(false);
     const hasRecordedSolve = useRef(false);
 
     // Scale cell size to fit the screen, with a smaller cap in landscape
@@ -86,8 +88,18 @@ export default function GameScreen() {
             const normalizedDifficulty = difficulty.toLowerCase();
             const scoreKey = normalizedDifficulty === 'medium' ? 'Medium'
                 : normalizedDifficulty === 'hard' ? 'Hard' : 'Easy';
-            addTime(scoreKey, seconds, username);
-            hasRecordedSolve.current = true;
+
+            setScoreSaving(true);
+            addTime(scoreKey, seconds, username)
+                .then(() => setScoreSaved(true))
+                .catch((e) => {
+                    console.error('Failed to record score:', e);
+                    setScoreSaved(true); // Allow navigation even on failure
+                })
+                .finally(() => {
+                    hasRecordedSolve.current = true;
+                    setScoreSaving(false);
+                });
         }
     }, [addTime, difficulty, grid, isSolved, isReady, seconds, solutionGrid, username]);
 
@@ -116,8 +128,14 @@ export default function GameScreen() {
                     <Text style={styles.completionText}>
                         You solved the puzzle in {Math.floor(seconds / 60)}:{(seconds % 60).toString().padStart(2, '0')}!
                     </Text>
-                    <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
-                    <Button title="View Stats"   onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
+                    {scoreSaved ? (
+                        <>
+                            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+                            <Button title="View Stats" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
+                        </>
+                    ) : (
+                        <Text style={styles.completionText}>Saving your score...</Text>
+                    )}
                 </View>
             </View>
         );

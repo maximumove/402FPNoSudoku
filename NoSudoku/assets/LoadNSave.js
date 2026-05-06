@@ -202,5 +202,8 @@ export async function saveScores(scores) {
         },
         body: JSON.stringify(scores),
     };
-    await fetch(saveScoresLink, requestOptions);
+    const response = await fetch(saveScoresLink, requestOptions);
+    if (!response.ok) {
+        throw new Error(`Failed to save scores: ${response.status} ${response.statusText}`);
+    }
 }
