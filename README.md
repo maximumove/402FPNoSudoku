@@ -43,6 +43,9 @@ OR
 	My design choices include the general color scheme of the program (I much perfer dark themes to light, and the blue color for the text really pops) as well as the placement of the buttons (it made sense to me to have back to home at the bottom, as most would see that last so they could take in new info in a screen). The layout of the login screen and home screen was also done do make it easy to take in. I also made it so that the mobile version had less on it (no boarder around the buttons) since the screens are smaller and it would have cluttered the screen. Finally, the little victory screen after a board is completed is meant to feel rewarding, and thus contrasts with the rest of the program to make that accomplishment stand out.
 
 ### Emily Newton
+	I'm fortunate to have been put with a group that was so understanding and nice. We all had one common goal and if one of us needed help, we never made the other person feel bad for needing help. This project made me realize how large the depth of react native goes, there were so many different things I could import, and it became really overwhelming. Fortunately, Jay had already had the logic for the puzzle board, and that made things a lot smoother. I wish the organization was a little tighter, because at times it was confusing as to who was covering what, but we were all there for each other, so it was never a major issue. 
+
+	One of the features I handled was the profile pic implementation. For the design, I wanted the user to be assigned a default user profile pic to be displayed. Then, have the user tap on the default picture to change or upload a new profile picture. This made the most sense to me from seeing how most mainstream apps handle that functionality. For the camera feature, I had the buttons such as snap and cancel at the bottom of the camera for a couple reasons. One, it was intuitive to how a camera app is designed, and two, it matches the view of the tabs of the app itself being on the bottom. One design feature I would like to try to implement is highlighting the cell that the user selects. This has proven to be more difficult than I had imagined, but I feel like this would benefit the user a lot by being able to see what cell they have selected to enter a number into. 
 
 ### Jay Rudel
 	Working on this project has been lots of fun. My group mates were a ton of fun to work with, one of my favorite parts about my group is that we had such strong communication throughout the entire project. Made it super simple to get stuff done and turn things in on time. One of my favorite parts about this project was actually learning more about different tabs. Troy for his camera project made multiple tabs and I did not, I was confused originally to how it worked but after working with Troy and them. I understand them better and I think they are an awesome tool. 
@@ -52,4 +55,4 @@ OR
 
 ## Known Bugs/Issues
 
-## Refrences
+## References
