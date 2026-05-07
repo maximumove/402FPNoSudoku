@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { loadGameState, resolveParam } from '../../assets/LoadNSave';
+import { loadGameState, resolveParam } from '../assets/LoadNSave';
 
 export default function StartGameScreen() {
     const router = useRouter();
@@ -23,7 +23,7 @@ export default function StartGameScreen() {
 
     const startNew = (difficulty = 'E') => {
         router.push(
-            '/(tabs)/gameScreen?resume=false&difficulty=' +
+            '/gameScreen?resume=false&difficulty=' +
             encodeURIComponent(difficulty) +
             '&username=' +
             encodeURIComponent(username)
@@ -32,7 +32,7 @@ export default function StartGameScreen() {
 
     const continueSaved = () => {
         if (!hasSavedGame) return;
-        router.push('/(tabs)/gameScreen?resume=true&username=' + encodeURIComponent(username));
+        router.push('/gameScreen?resume=true&username=' + encodeURIComponent(username));
     };
 
     return (
@@ -67,7 +67,7 @@ export default function StartGameScreen() {
                 </TouchableOpacity>
             </View>
 
-            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+            <Button title="Back to Home" onPress={() => router.push('/home?username=' + encodeURIComponent(username))} />
         </ScrollView>
     );
 }

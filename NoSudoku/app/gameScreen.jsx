@@ -3,12 +3,12 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, useWindowDimensions, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Timer, NumberTracker, ShareButton } from '../../assets/gameScreen';
+import { Timer, NumberTracker, ShareButton } from '../assets/gameScreen';
 import { useLocalSearchParams } from 'expo-router';
-import Puzzle from '../../assets/gameScreen/Puzzle';
-import { useGame } from '../../context/GameContext';
+import Puzzle from '../assets/gameScreen/Puzzle';
+import { useGame } from '../context/GameContext';
 import { useRouter } from 'expo-router';
-import { saveGameState, loadGameState, clearGameState, resolveParam } from '../../assets/LoadNSave';
+import { saveGameState, loadGameState, clearGameState, resolveParam } from '../assets/LoadNSave';
 
 export default function GameScreen() {
     const { addTime } = useGame();
@@ -129,8 +129,8 @@ export default function GameScreen() {
                     </Text>
                     {scoreSaved ? (
                         <>
-                            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
-                            <Button title="View Stats" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(username))} />
+                            <Button title="Back to Home" onPress={() => router.push('/home?username=' + encodeURIComponent(username))} />
+                            <Button title="View Stats" onPress={() => router.push('/statsScreen?username=' + encodeURIComponent(username))} />
                         </>
                     ) : (
                         <Text style={styles.completionText}>Saving your score...</Text>
@@ -206,41 +206,41 @@ export default function GameScreen() {
         </View>
     );
 
-    if (isLandscape) {
-        // Landscape: board on the left, controls on the right
-        return (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.landscapeContainer}>
-                    <View style={styles.landscapeLeft}>
-                        {board}
-                    </View>
-                    <View style={styles.landscapeRight}>
-                        <Timer seconds={seconds} />
-                        <ShareButton />
-                        <NumberTracker
-                            board={grid}
-                            selectedNumber={selectedNumber}
-                            onSelectNumber={setSelectedNumber}
-                        />
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
-        );
-    }
-
-    // Portrait: stacked layout
-    return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
-            <View style={styles.container}>
+    const content = isLandscape ? (
+        <View style={styles.landscapeContainer}>
+            <View style={styles.landscapeLeft}>
+                {board}
+            </View>
+            <View style={styles.landscapeRight}>
                 <Timer seconds={seconds} />
                 <ShareButton />
-                {board}
                 <NumberTracker
                     board={grid}
                     selectedNumber={selectedNumber}
                     onSelectNumber={setSelectedNumber}
                 />
             </View>
+        </View>
+    ) : (
+        <View style={styles.container}>
+            <Timer seconds={seconds} />
+            <ShareButton />
+            {board}
+            <NumberTracker
+                board={grid}
+                selectedNumber={selectedNumber}
+                onSelectNumber={setSelectedNumber}
+            />
+        </View>
+    );
+
+    if (Platform.OS === 'web') {
+        return content;
+    }
+
+    return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            {content}
         </TouchableWithoutFeedback>
     );
 }

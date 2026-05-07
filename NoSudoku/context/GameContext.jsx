@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
-import { saveScores } from '../assets/LoadNSave';  // named import, not default
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { loadScores, saveScores } from '../assets/LoadNSave';  // named imports
 
 const GameContext = createContext();
 
@@ -46,6 +46,16 @@ export function GameProvider({ children }) {
     Medium: [],
     Hard: [],
   });
+
+  useEffect(() => {
+    loadScores()
+      .then((loadedScores) => {
+        if (loadedScores) {
+          setScores(loadedScores);
+        }
+      })
+      .catch((e) => console.error('Failed to load scores:', e));
+  }, []);
 
   const addScore = (difficulty, newScore) => {
     let flatScores = null;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { resolveParam } from '../../assets/LoadNSave';
+import { resolveParam } from '../assets/LoadNSave';
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -19,15 +19,15 @@ export default function HomeScreen() {
             <View style={isLandscape ? styles.buttonGridLandscape : styles.buttonGridPortrait}>
                 <View style={isLandscape ? styles.buttonCol : styles.buttonRow}>
                     <Text style={styles.subtitle}>Click the button below to start playing.</Text>
-                    <Button title="Start Game" onPress={() => router.push('/(tabs)/startGameScreen?username=' + encodeURIComponent(displayUsername))} />
+                    <Button title="Start Game" onPress={() => router.push('/startGameScreen?username=' + encodeURIComponent(displayUsername))} />
                 </View>
                 <View style={isLandscape ? styles.buttonCol : styles.buttonRow}>
                     <Text style={styles.subtitle}>See how your score compares to others!</Text>
-                    <Button title="View Leaderboard" onPress={() => router.push('/(tabs)/statsScreen?username=' + encodeURIComponent(displayUsername))} />
+                    <Button title="View Leaderboard" onPress={() => router.push('/statsScreen?username=' + encodeURIComponent(displayUsername))} />
                 </View>
                 <View style={isLandscape ? styles.buttonCol : styles.buttonRow}>
                     <Text style={styles.subtitle}>Adjust user or game settings.</Text>
-                    <Button title="Settings" onPress={() => router.push('/(tabs)/userProfileScreen?username=' + encodeURIComponent(displayUsername))} />
+                    <Button title="Settings" onPress={() => router.push('/userProfileScreen?username=' + encodeURIComponent(displayUsername))} />
                 </View>
             </View>
         </ScrollView>

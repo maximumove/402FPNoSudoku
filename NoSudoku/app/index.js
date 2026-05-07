@@ -18,28 +18,44 @@ export default function LoginScreen() {
     }, []);
 
     const handleLogin = async () => {
-        if (!username.trim()) {
+        const trimmedUsername = username.trim();
+        if (!trimmedUsername) {
             alert('Please enter a username');
             return;
         }
 
-        let existingUser = users.find(user => user.username === username);
+        let userList = users;
+        if (userList.length === 0) {
+            try {
+                const loadedUsers = await loadUsers();
+                userList = loadedUsers || [];
+                setUsers(userList);
+            } catch (error) {
+                console.error('Failed to reload users on login:', error);
+            }
+        }
+
+        const existingUser = userList.find(user => user.username?.trim().toLowerCase() === trimmedUsername.toLowerCase());
+        const loginName = existingUser?.username ?? trimmedUsername;
 
         if (!existingUser) {
-            existingUser = {
-                username: username,
-                dateJoined: new Date().toISOString().split('T')[0],
+            const today = new Date();
+            const dateJoined = today.toLocaleDateString('en-CA');
+            const newUser = {
+                username: loginName,
+                dateJoined,
                 profilePicture: null,
             };
-            const updatedUsers = [...users, existingUser];
+            const updatedUsers = [...userList, newUser];
             try {
                 await saveUsers(updatedUsers);
+                setUsers(updatedUsers);
             } catch (error) {
                 console.error('Failed to save user:', error);
             }
         }
 
-        router.replace('/(tabs)/home?username=' + encodeURIComponent(username));
+        router.replace('/home?username=' + encodeURIComponent(loginName));
     };
 
     return (

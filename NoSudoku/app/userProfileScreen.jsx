@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Button, StyleSheet, Image, TouchableOpacity, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { loadUsers, saveUsers, loadProfilePicture, resolveParam } from '../../assets/LoadNSave.js';
+import { loadUsers, saveUsers, loadProfilePicture, resolveParam } from '../assets/LoadNSave.js';
 
 export default function UserProfileScreen() {
     const router = useRouter();
@@ -20,17 +20,22 @@ export default function UserProfileScreen() {
             const fetchUser = async () => {
                 const users = await loadUsers();
                 const trimmedUsername = incomingUsername?.trim();
-                const user = users.find(u => u.username?.trim() === trimmedUsername);
+                const user = users.find(u => u.username?.trim().toLowerCase() === trimmedUsername?.toLowerCase());
 
                 if (user) {
                     setUsername(user.username);
                     setDateJoined(user.dateJoined || 'N/A');
                 } else if (trimmedUsername) {
-                    const today = new Date().toISOString().split('T')[0];
-                    const newUser = { username: trimmedUsername, dateJoined: today };
-                    try { await saveUsers([...users, newUser]); } catch (e) { console.error(e); }
+                    const today = new Date();
+                    const dateJoined = today.toLocaleDateString('en-CA');
+                    const newUser = { username: trimmedUsername, dateJoined };
+                    try {
+                        await saveUsers([...users, newUser]);
+                    } catch (e) {
+                        console.error('Failed to save new user:', e);
+                    }
                     setUsername(trimmedUsername);
-                    setDateJoined(today);
+                    setDateJoined(dateJoined);
                 } else {
                     setUsername('Guest');
                     setDateJoined('N/A');
@@ -51,7 +56,7 @@ export default function UserProfileScreen() {
 
     const imageSource = profilePicture
         ? { uri: profilePicture }
-        : require('../../assets/images/defaultIcon.svg.png');
+        : require('../assets/images/defaultIcon.svg.png');
 
     const picSize = isLandscape ? 80 : 120;
 
@@ -72,7 +77,7 @@ export default function UserProfileScreen() {
                     <View style={styles.landscapeRight}>
                         <Text style={styles.subtitle}>Username: {username}</Text>
                         <Text style={styles.subtitle}>Date Joined: {dateJoined}</Text>
-                        <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+                        <Button title="Back to Home" onPress={() => router.push('/home?username=' + encodeURIComponent(username))} />
                     </View>
                 </View>
             ) : (
@@ -84,7 +89,7 @@ export default function UserProfileScreen() {
                     </TouchableOpacity>
                     <Text style={styles.subtitle}>Username: {username}</Text>
                     <Text style={styles.subtitle}>Date Joined: {dateJoined}</Text>
-                    <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+                    <Button title="Back to Home" onPress={() => router.push('/home?username=' + encodeURIComponent(username))} />
                 </>
             )}
         </ScrollView>

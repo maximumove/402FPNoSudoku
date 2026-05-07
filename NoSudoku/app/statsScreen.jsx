@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, useWindowDimensions, ScrollView, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { resolveParam } from '../../assets/LoadNSave.js';
-import { useGame } from '../../context/GameContext';
+import { resolveParam } from '../assets/LoadNSave.js';
+import { useGame } from '../context/GameContext.jsx';
 
 export default function StatsScreen() {
     const router = useRouter();
@@ -50,7 +50,7 @@ export default function StatsScreen() {
                 statsBlock
             )}
 
-            <Button title="Back to Home" onPress={() => router.push('/(tabs)/home?username=' + encodeURIComponent(username))} />
+            <Button title="Back to Home" onPress={() => router.push('/home?username=' + encodeURIComponent(username))} />
         </ScrollView>
     );
 }

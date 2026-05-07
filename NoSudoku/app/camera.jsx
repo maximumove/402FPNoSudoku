@@ -44,7 +44,7 @@ function WebCamera({ username, onCancel }) {
         }
 
         saveProfilePicture(username, imageData).then(() => {
-            router.replace({ pathname: '/(tabs)/userProfileScreen', params: { username } });
+            router.replace({ pathname: '/userProfileScreen', params: { username } });
         }).catch(e => console.error('Failed to save photo:', e));
     };
 
@@ -126,7 +126,7 @@ function NativeCamera({ username, onCancel }) {
                 ? `data:image/jpeg;base64,${photo.base64}`
                 : photo.uri;
             await saveProfilePicture(username, imageData);
-            router.replace({ pathname: '/(tabs)/userProfileScreen', params: { username } });
+            router.replace({ pathname: '/userProfileScreen', params: { username } });
         } catch (e) {
             console.error('Failed to take/save picture:', e);
         }
